@@ -13,7 +13,7 @@ public class ItemManager {
 
     public static HashMap<String, ItemStack> characterBlocks = new HashMap<>();
 
-    private static List<Material> anyPlankChoice = new ArrayList<>(Arrays.asList(
+    private static final List<Material> anyPlankChoice = new ArrayList<>(Arrays.asList(
             Material.ACACIA_PLANKS,
             Material.BIRCH_PLANKS,
             Material.CRIMSON_PLANKS,
@@ -24,9 +24,9 @@ public class ItemManager {
             Material.WARPED_PLANKS));
 
     public static void setupBlocks() {
-        for (char i = 'a'; i <= 'z'; i++) {
+        /*for (char i = 'a'; i <= 'z'; i++) {
             addBlock(i, "L");
-        }
+        }*/
         for (char i = 'A'; i <= 'Z'; i++) {
             addBlock(i, "U");
         }
@@ -43,6 +43,10 @@ public class ItemManager {
             itemMeta.setLocalizedName(String.format("%s%c_%s", preChar, Character.toUpperCase(c), plank.name()));
             itemMeta.setDisplayName(String.format("%c %s", c, plank.name()));
             itemMeta.setLore(new ArrayList<>(Collections.singletonList(String.format("CharacterValue '%c'", c))));
+            if(itemMeta.hasCustomModelData()) {
+                int data = itemMeta.getCustomModelData();
+
+            }
             item.setItemMeta(itemMeta);
             System.out.println(itemMeta.getLocalizedName());
             characterBlocks.put(itemMeta.getLocalizedName(), item);

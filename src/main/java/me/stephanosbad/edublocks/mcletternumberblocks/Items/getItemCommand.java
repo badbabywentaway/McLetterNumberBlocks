@@ -1,25 +1,41 @@
 package me.stephanosbad.edublocks.mcletternumberblocks.Items;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
-
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class getItemCommand implements CommandExecutor, TabCompleter {
+
+    // Colorize Strings!
+    public static String colorize(String str)
+    {
+        /*
+         Since the translateAlternateColors method works with only one char and overwrites the previous one,
+         we are going to replace '&' with '§' and then run that method with all the '§'s.
+         */
+        str = str.replace('&', '§');
+        ChatColor.translateAlternateColorCodes('§', str);
+        return str;
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if (!(sender instanceof ConsoleCommandSender))
+        if (!(sender instanceof ConsoleCommandSender)) {
+            sender.sendMessage("Console command only.");
             return true;
+        }
 
         // give <user> <type> <item> <amount>
         if (args.length < 3) {
+            sender.sendMessage(colorize("&7-----[ &eCHARBLOCK Help &7]-----"));
+
             return true;
         }
 
@@ -27,6 +43,7 @@ public class getItemCommand implements CommandExecutor, TabCompleter {
         Player givePlayer = Bukkit.getPlayerExact(givePlayerName);
 
         if (givePlayer == null || !givePlayer.isOnline()) {
+            sender.sendMessage(colorize(String.format("Player %s not online.", givePlayerName)));
             return true;
         }
 
@@ -37,20 +54,19 @@ public class getItemCommand implements CommandExecutor, TabCompleter {
         try {
             amount = Integer.parseInt(amountStr);
         } catch (Exception e) {
+            sender.sendMessage(colorize("&red Exception: " + e.getMessage()));
             return true;
         }
 
         ItemStack itemStack = null;
 
-
             try {
 
                 itemStack = ItemManager.getBlocks(itemName);
             } catch (Exception e) {
-
+                sender.sendMessage(colorize("&red Exception: " + e.getMessage()));
                 return true;
             }
-
 
             if (itemStack != null && itemStack.getItemMeta() != null) {
                 itemStack.setAmount(amount);
@@ -59,7 +75,7 @@ public class getItemCommand implements CommandExecutor, TabCompleter {
 
             }
 
-
+            sender.sendMessage(colorize("&7-----[ &eCHARBLOCK Help &7]-----"));
             return true;
         }
 

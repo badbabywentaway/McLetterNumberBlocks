@@ -8,4 +8,4 @@ description: Letter and number blocks for use by education plugins
 commands:
   charblock:
     usage: /charblock <player> <item> <amount>
-    description: Give an item to a player.
+    description: Give a letter or number block to a player.
