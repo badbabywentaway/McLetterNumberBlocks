@@ -1,12 +1,32 @@
 package me.stephanosbad.edublocks.mcletternumberblocks.Items;
 
-import io.github.bananapuncher714.nbteditor.NBTEditor;
+//import io.github.bananapuncher714.nbteditor.NBTEditor;
+import me.stephanosbad.edublocks.mcletternumberblocks.McLetterNumberBlocks;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.MultipleFacing;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.RegisteredListener;
 
 import java.util.*;
+
 
 public class ItemManager {
 
@@ -61,5 +81,10 @@ public class ItemManager {
     public static Set<String> getCharacterBlockNames ()
     {
         return characterBlocks.keySet();
+    }
+
+    public static ItemStack getBlockAsItem(int code)
+    {
+        return characterBlocks.get("ua_block").clone();
     }
 }

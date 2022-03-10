@@ -32,6 +32,7 @@ public final class McLetterNumberBlocks extends JavaPlugin {
         ItemManager.setupBlocks();
         getCommand("charblock").setExecutor(new getItemCommand());
         getCommand("charblock").setTabCompleter(new getItemCommand());
+
     }
 
     @Override
