@@ -28,7 +28,7 @@ import org.bukkit.plugin.RegisteredListener;
 import java.util.*;
 
 
-public class ItemManager {
+public class ItemManager implements Listener {
 
 
     public static HashMap<String, ItemStack> characterBlocks = new HashMap<>();

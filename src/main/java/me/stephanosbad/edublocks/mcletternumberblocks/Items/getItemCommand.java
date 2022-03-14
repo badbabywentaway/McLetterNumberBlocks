@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
@@ -14,8 +15,7 @@ import java.util.List;
 public class getItemCommand implements CommandExecutor, TabCompleter {
 
     // Colorize Strings!
-    public static String colorize(String str)
-    {
+    public static String colorize(String str) {
         /*
          Since the translateAlternateColors method works with only one char and overwrites the previous one,
          we are going to replace '&' with '§' and then run that method with all the '§'s.
@@ -24,6 +24,8 @@ public class getItemCommand implements CommandExecutor, TabCompleter {
         ChatColor.translateAlternateColorCodes('§', str);
         return str;
     }
+
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
@@ -60,64 +62,65 @@ public class getItemCommand implements CommandExecutor, TabCompleter {
 
         ItemStack itemStack = null;
 
-            try {
+        try {
 
-                itemStack = ItemManager.getBlocks(itemName);
-            } catch (Exception e) {
-                sender.sendMessage(colorize("&red Exception: " + e.getMessage()));
-                return true;
-            }
-
-            if (itemStack != null && itemStack.getItemMeta() != null) {
-                itemStack.setAmount(amount);
-                givePlayer.getInventory().addItem(itemStack);
-                return false;
-
-            }
-
-            sender.sendMessage(colorize("&7-----[ &eCHARBLOCK Help &7]-----"));
+            itemStack = ItemManager.getBlocks(itemName);
+        } catch (Exception e) {
+            sender.sendMessage(colorize("&red Exception: " + e.getMessage()));
             return true;
         }
 
-        @Nullable
-        @Override
-        public List<String> onTabComplete (@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String
-        label, @NotNull String[]args)
-        {
-            List<String> completions = new ArrayList<>();
-            String mainArg;
+        if (itemStack != null && itemStack.getItemMeta() != null) {
+            itemStack.setAmount(amount);
+            givePlayer.getInventory().addItem(itemStack);
+            return false;
 
-            if (args.length == 0) return null;
+        }
 
-            if (args.length == 1) {
-                mainArg = args[0].toLowerCase();
-                List<String> onlinePlayers = new ArrayList<>();
-                for (Player p : Bukkit.getOnlinePlayers()) {
-                    onlinePlayers.add(p.getName());
-                }
-                StringUtil.copyPartialMatches(mainArg, onlinePlayers, completions);
-            }  else if (args.length == 2) {
-                mainArg = args[1].toLowerCase();
+        sender.sendMessage(colorize("&7-----[ &eCHARBLOCK Help &7]-----"));
+        return true;
+    }
 
-                List<String> items = new ArrayList<>();
+    @Nullable
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String
+            label, @NotNull String[] args) {
+        List<String> completions = new ArrayList<>();
+        String mainArg;
 
-               for (String s : ItemManager.getCharacterBlockNames()) {
-                        items.add(s.toLowerCase());
-                    }
+        if (args.length == 0) return null;
 
+        if (args.length == 1) {
+            mainArg = args[0].toLowerCase();
+            List<String> onlinePlayers = new ArrayList<>();
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                onlinePlayers.add(p.getName());
+            }
+            StringUtil.copyPartialMatches(mainArg, onlinePlayers, completions);
+        } else if (args.length == 2) {
+            mainArg = args[1].toLowerCase();
 
-                StringUtil.copyPartialMatches(mainArg, items, completions);
-            } else if (args.length == 3) {
-                mainArg = args[2].toLowerCase();
-                List<String> numbers = new ArrayList<>();
-                for (int i = 1; i <= 64; i++) {
-                    numbers.add(i + "");
-                }
+            List<String> items = new ArrayList<>();
 
-                StringUtil.copyPartialMatches(mainArg, numbers, completions);
+            for (String s : ItemManager.getCharacterBlockNames()) {
+                items.add(s.toLowerCase());
             }
 
-            return completions;
+
+            StringUtil.copyPartialMatches(mainArg, items, completions);
+        } else if (args.length == 3) {
+            mainArg = args[2].toLowerCase();
+            List<String> numbers = new ArrayList<>();
+            for (int i = 1; i <= 64; i++) {
+                numbers.add(i + "");
+            }
+
+            StringUtil.copyPartialMatches(mainArg, numbers, completions);
         }
+
+        return completions;
     }
+}
+
+
 
