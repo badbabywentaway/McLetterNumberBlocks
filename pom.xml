@@ -52,7 +52,6 @@
             </resource>
         </resources>
     </build>
-
     <repositories>
         <repository>
             <id>spigotmc-repo</id>
@@ -67,7 +66,6 @@
             <url>https://jitpack.io</url>
         </repository>
     </repositories>
-
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
@@ -78,31 +76,31 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>RELEASE</version>
+            <version>23.0.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>RELEASE</version>
+            <version>23.0.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>RELEASE</version>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>RELEASE</version>
+            <version>5.8.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.github.oraxen</groupId>
             <artifactId>oraxen</artifactId>
-            <version>RELEASE</version>
+            <version>-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

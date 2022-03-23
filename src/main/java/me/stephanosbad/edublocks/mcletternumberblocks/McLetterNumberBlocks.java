@@ -1,5 +1,6 @@
 package me.stephanosbad.edublocks.mcletternumberblocks;
 
+import io.th0rgal.oraxen.pack.generation.ResourcePack;
 import me.stephanosbad.edublocks.mcletternumberblocks.Items.ItemManager;
 import me.stephanosbad.edublocks.mcletternumberblocks.Items.getItemCommand;
 import org.bukkit.plugin.PluginManager;
@@ -32,6 +33,7 @@ public final class McLetterNumberBlocks extends JavaPlugin {
         ItemManager.setupBlocks();
         getCommand("charblock").setExecutor(new getItemCommand());
         getCommand("charblock").setTabCompleter(new getItemCommand());
+
 
     }
 
