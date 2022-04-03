@@ -27,7 +27,7 @@ public class getItemCommand implements CommandExecutor, TabCompleter {
 
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
 
         if (!(sender instanceof ConsoleCommandSender)) {
             sender.sendMessage("Console command only.");

@@ -6,6 +6,7 @@ import me.stephanosbad.edublocks.mcletternumberblocks.Items.getItemCommand;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public final class McLetterNumberBlocks extends JavaPlugin {
@@ -31,10 +32,8 @@ public final class McLetterNumberBlocks extends JavaPlugin {
         // Plugin startup logic
         System.out.println("Minecraft Letter/Number Block Plugin Starting");
         ItemManager.setupBlocks();
-        getCommand("charblock").setExecutor(new getItemCommand());
-        getCommand("charblock").setTabCompleter(new getItemCommand());
-
-
+        Objects.requireNonNull(getCommand("charblock")).setExecutor(new getItemCommand());
+        Objects.requireNonNull(getCommand("charblock")).setTabCompleter(new getItemCommand());
     }
 
     @Override
