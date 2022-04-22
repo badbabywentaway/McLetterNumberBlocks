@@ -81,7 +81,7 @@ public enum LetterFactors {
     public static ItemStack randomPickOraxenBlock()
     {
         var item = LetterFactors.randomPick().id;
-        Bukkit.getLogger().info(item);
+        //Bukkit.getLogger().info(item);
 
         return OraxenItems.getItemById(item).build();
     }

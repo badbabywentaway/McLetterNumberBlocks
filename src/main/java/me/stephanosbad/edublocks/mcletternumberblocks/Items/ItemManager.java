@@ -1,6 +1,7 @@
 package me.stephanosbad.edublocks.mcletternumberblocks.Items;
 
 import io.th0rgal.oraxen.compatibilities.CompatibilityProvider;
+import io.th0rgal.oraxen.compatibilities.provided.itembridge.OraxenItemBridge;
 import io.th0rgal.oraxen.items.OraxenItems;
 import me.stephanosbad.edublocks.mcletternumberblocks.McLetterNumberBlocks;
 import org.bukkit.Bukkit;
@@ -10,7 +11,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import me.stephanosbad.edublocks.mcletternumberblocks.WordDict;
 
@@ -41,7 +41,9 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
     }
 
     @EventHandler
-    public void onBreakWood(BlockBreakEvent e) {
+    public void onBreakWoodOrBlock(BlockBreakEvent e) {
+        e.getPlayer().sendMessage("Blam! " + e.getBlock().getBlockData().getMaterial().name());
+        System.out.println("Blam! " + e.getBlock().getBlockData().getMaterial().name());
         var player = e.getPlayer();
         player.getInventory().getItemInMainHand();
         player.getInventory().getItemInMainHand().getEnchantments();
@@ -49,36 +51,47 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
             //If there is no silk touch on it
             if (
                     list.contains(e.getBlock().getBlockData().getMaterial()) &&
-                            Math.random() < 0.1) {
-                var block = LetterFactors.randomPickOraxenBlock();
-                if (block != null) {
-
-                    player.getWorld().dropItemNaturally(e.getBlock().getLocation(), block);
-
-                }
+                            Math.random() < 0.05) {
+                woodBlockBreak(e);
             }
+ /*           else
+            {
+                onStickWhack(e);
+            }*/
         }
     }
 
-    @EventHandler
-    public void onStickWhack(BlockDamageEvent e)
-    {
-        if(!Objects.requireNonNull(e.getPlayer().getInventory().getItemInMainHand().getItemMeta()).getDisplayName().contains("gold"))
-        {
-            return;
+    private void woodBlockBreak(BlockBreakEvent e) {
+        var block = LetterFactors.randomPickOraxenBlock();
+        var player = e.getPlayer();
+        if (block != null) {
+
+            player.getWorld().dropItemNaturally(e.getBlock().getLocation(), block);
+
         }
+    }
+/*
+    public void onStickWhack(BlockBreakEvent e)
+    {
+        var hand = e.getPlayer().getInventory().getItemInMainHand();
+
+        if(!hand.getType().name().toLowerCase(Locale.ROOT).contains("gold")) {
+                Bukkit.getLogger().info("Not hit with gold: " + hand.getType().name());
+                return;
+        }
+
 
         var testBlock = e.getBlock();
         var c = testForLetter(testBlock);
         if(c == '\0')
         {
+            Bukkit.getLogger().info("Not a letter block: " + testBlock.getDrops());
             return;
         }
         var lateralDirection = checkLateralBlocks(testBlock);
         StringBuilder outString = new StringBuilder();
         if(lateralDirection.isValid())
         {
-
             while((c = testForLetter(testBlock) )!= '\0')
             {
                 outString.append(c);
@@ -137,14 +150,18 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
 
     }
 
-
+*/
     char testForLetter(Block testBlock)
     {
         AtomicReference<String> match = new AtomicReference<>("");
         if(Arrays.stream(LetterFactors.values()).anyMatch((v) ->
         {
 
-            if(Objects.equals(v.id, testBlock.getBlockData().getMaterial().name()))
+            if(testBlock.getType() == Material.NOTE_BLOCK && testBlock.getDrops().stream().anyMatch((w) ->
+            {
+                Bukkit.getLogger().info(OraxenItems.getIdByItem(w) + " : " + v.id);
+                return Objects.equals(OraxenItems.getIdByItem(w), v.id);
+            }))
             {
                 match.set(v.id);
                 return true;
