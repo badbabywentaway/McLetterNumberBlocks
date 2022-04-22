@@ -42,8 +42,8 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
 
     @EventHandler
     public void onBreakWoodOrBlock(BlockBreakEvent e) {
-        e.getPlayer().sendMessage("Blam! " + e.getBlock().getBlockData().getMaterial().name());
-        System.out.println("Blam! " + e.getBlock().getBlockData().getMaterial().name());
+        //e.getPlayer().sendMessage("Blam! " + e.getBlock().getBlockData().getMaterial().name());
+        //System.out.println("Blam! " + e.getBlock().getBlockData().getMaterial().name());
         var player = e.getPlayer();
         player.getInventory().getItemInMainHand();
         player.getInventory().getItemInMainHand().getEnchantments();
