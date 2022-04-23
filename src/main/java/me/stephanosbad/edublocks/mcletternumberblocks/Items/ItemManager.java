@@ -54,10 +54,10 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
                             Math.random() < 0.05) {
                 woodBlockBreak(e);
             }
- /*           else
+            else
             {
                 onStickWhack(e);
-            }*/
+            }
         }
     }
 
@@ -70,7 +70,7 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
 
         }
     }
-/*
+
     public void onStickWhack(BlockBreakEvent e)
     {
         var hand = e.getPlayer().getInventory().getItemInMainHand();
@@ -150,7 +150,7 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
 
     }
 
-*/
+
     char testForLetter(Block testBlock)
     {
         AtomicReference<String> match = new AtomicReference<>("");
@@ -173,5 +173,7 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
         }
         return '\0';
     }
+
+
 }
 
