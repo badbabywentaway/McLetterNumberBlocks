@@ -4,7 +4,8 @@ main: me.stephanosbad.edublocks.mcletternumberblocks.McLetterNumberBlocks
 api-version: 1.18
 authors: [ stephanosbad ]
 description: Letter and number blocks for use by education plugins
-depend: [WorldGuard]
+depend: [ Oraxen ]
+softdepend: [ WorldGuard, GriefPrevention ]
 commands:
   charblock:
     usage: /charblock <player> <item> <amount>

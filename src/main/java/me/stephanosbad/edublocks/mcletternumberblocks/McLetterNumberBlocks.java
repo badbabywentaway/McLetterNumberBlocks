@@ -1,9 +1,7 @@
 package me.stephanosbad.edublocks.mcletternumberblocks;
 
 import io.th0rgal.oraxen.compatibilities.CompatibilitiesManager;
-import io.th0rgal.oraxen.mechanics.MechanicFactory;
 import me.stephanosbad.edublocks.mcletternumberblocks.Items.ItemManager;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -14,15 +12,26 @@ import static org.bukkit.Bukkit.getPluginManager;
 
 public final class McLetterNumberBlocks extends JavaPlugin {
 
-
+    /**
+     *
+     */
     public boolean oraxenLoaded = false;
+
+    /**
+     *
+     */
     public static Plugin oraxenPlugin;
+
+    /**
+     *
+     */
     public ConfigDataHandler configDataHandler;
 
-
+    /**
+     *
+     */
     @Override
     public void onEnable() {
-
         // Plugin startup logic
         System.out.println("Minecraft Letter/Number Block Plugin Starting");
         configDataHandler = new ConfigDataHandler(this);
@@ -39,6 +48,9 @@ public final class McLetterNumberBlocks extends JavaPlugin {
         getPluginManager().registerEvents(new ItemManager(this), this);
     }
 
+    /**
+     *
+     */
     @Override
     public void onDisable() {
         // Plugin shutdown logic

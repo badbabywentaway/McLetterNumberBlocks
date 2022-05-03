@@ -1,7 +1,6 @@
 package me.stephanosbad.edublocks.mcletternumberblocks.Items;
 
 import io.th0rgal.oraxen.items.OraxenItems;
-import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
@@ -9,6 +8,9 @@ import java.util.Arrays;
 import static java.lang.Character.toLowerCase;
 
 
+/**
+ *
+ */
 public enum LetterFactors {
 
     //Concise Oxford Dictionary (9th edition, 1995)
@@ -39,14 +41,47 @@ public enum LetterFactors {
     P(3.1671, 16.14, 20),
     Q(0.1962, 1, 21);
 
+
+    /**
+     *
+     */
     public final char character;
+
+    /**
+     *
+     */
+    public final int customVariation;
+
+    /**
+     *
+     */
     private final double frequencyPercent;
+
+    /**
+     *
+     */
     private final double frequencyFactor;
-    public int customVariation;
+
+    /**
+     *
+     */
     private double hitLow;
+
+    /**
+     *
+     */
     private double hitHigh;
+
+    /**
+     *
+     */
     final String id;
 
+    /**
+     * @param frequencyPercent
+     * @param frequencyFactor
+     * @param customVariation
+     */
     LetterFactors(double frequencyPercent, double frequencyFactor, int customVariation)
     {
         this.frequencyPercent = frequencyPercent;
@@ -56,12 +91,23 @@ public enum LetterFactors {
         this.id = toLowerCase(this.character) + "_block";
     }
 
+    /**
+     * @param testValue
+     * @return
+     */
     private boolean isHit(double testValue)
     {
         return (testValue >= hitLow) && (testValue < hitHigh);
     }
 
+    /**
+     *
+     */
     private static final double hitMax = sumAll();
+
+    /**
+     * @return
+     */
     private static double sumAll()
     {
         double ret = 0;
@@ -74,20 +120,21 @@ public enum LetterFactors {
         return ret;
     }
 
+    /**
+     * @return
+     */
     public static LetterFactors randomPick()
     {
         var randVal = Math.random()*hitMax;
         return Arrays.stream(LetterFactors.values()).filter(it -> it.isHit(randVal)).findFirst().orElse(null);
     }
 
+    /**
+     * @return
+     */
     public static ItemStack randomPickOraxenBlock()
     {
         var item = LetterFactors.randomPick().id;
-        //Bukkit.getLogger().info(item);
-
         return OraxenItems.getItemById(item).build();
     }
-
-
-
 }

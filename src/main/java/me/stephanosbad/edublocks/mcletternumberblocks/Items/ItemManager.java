@@ -1,11 +1,13 @@
 package me.stephanosbad.edublocks.mcletternumberblocks.Items;
 
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import io.th0rgal.oraxen.compatibilities.CompatibilityProvider;
 import io.th0rgal.oraxen.items.OraxenItems;
 import io.th0rgal.oraxen.mechanics.provided.gameplay.noteblock.NoteBlockMechanic;
 import io.th0rgal.oraxen.mechanics.provided.gameplay.noteblock.NoteBlockMechanicFactory;
-import io.th0rgal.protectionlib.compatibilities.WorldGuardCompat;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
+import me.stephanosbad.edublocks.mcletternumberblocks.utility.LocationPair;
 import me.stephanosbad.edublocks.mcletternumberblocks.McLetterNumberBlocks;
 import me.stephanosbad.edublocks.mcletternumberblocks.WordDict;
 import org.bukkit.Bukkit;
@@ -23,8 +25,14 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ *
+ */
 public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> implements Listener {
-    McLetterNumberBlocks localPlugin;
+
+    /**
+     *
+     */
     private final List<Material> list = Arrays.asList(
             Material.ACACIA_LOG,
             Material.SPRUCE_LOG,
@@ -32,17 +40,72 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
             Material.DARK_OAK_LOG,
             Material.JUNGLE_LOG,
             Material.BIRCH_LOG);
-    WorldGuardCompat worldGuard;
+
+    /**
+     *
+     */
+    WorldGuard worldGuard = null;
+
+    /**
+     *
+     */
+    WorldGuardPlugin worldGuardPlugin = null;
+
+    /**
+     *
+     */
+    GriefPrevention griefPrevention = null;
+
+    /**
+     * @param localPlugin
+     */
     public ItemManager(McLetterNumberBlocks localPlugin)
     {
-        this.localPlugin = localPlugin;
-        worldGuard = new WorldGuardCompat(localPlugin, localPlugin);
+        this.plugin = localPlugin;
+        try {
+            worldGuardPlugin = WorldGuardPlugin.inst();
+            worldGuard = WorldGuard.getInstance();
+            if(worldGuardPlugin != null && worldGuard != null) {
+                Bukkit.getLogger().info("WorldGuard found.");
+            }
+            else
+            {
+                throw new NullPointerException("Class variable did not instantiate");
+            }
+        }
+        catch(Exception | Error e)
+        {
+            Bukkit.getLogger().info("WorldGuard not available.");
+        }
+
+        try {
+            griefPrevention = GriefPrevention.instance;
+            if(griefPrevention != null) {
+                Bukkit.getLogger().info("GriefPrevention found.");
+            }
+            else
+            {
+                throw new NullPointerException("Class variable did not instantiate");
+            }
+        }
+        catch(Exception | Error e)
+        {
+            Bukkit.getLogger().info("GriefPrevention not available.");
+        }
+
     }
 
+    /**
+     * @param commandString
+     * @return
+     */
     public static ItemStack getBlocks(String commandString) {
         return OraxenItems.getItemById(commandString).build();
     }
 
+    /**
+     * @return
+     */
     public static Set<String> getCharacterBlockNames() {
         var retValue = new HashSet<String>();
 
@@ -52,6 +115,9 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
         return retValue;
     }
 
+    /**
+     * @param e
+     */
     @EventHandler
     public void onBreakWoodOrLetter(BlockBreakEvent e) {
         //e.getPlayer().sendMessage("Blam! " + e.getBlock().getBlockData().getMaterial().name());
@@ -73,6 +139,9 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
         }
     }
 
+    /**
+     * @param e
+     */
     private void woodBlockBreak(BlockBreakEvent e) {
         var block = LetterFactors.randomPickOraxenBlock();
         var player = e.getPlayer();
@@ -88,6 +157,9 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
         }
     }
 
+    /**
+     * @param e
+     */
     public void letterBlockBreak(BlockBreakEvent e)
     {
         var hand = e.getPlayer().getInventory().getItemInMainHand();
@@ -97,7 +169,7 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
             return;
         }
         if(!hand.getType().name().toLowerCase(Locale.ROOT).contains("gold")) {
-                Bukkit.getLogger().info("Not hit with gold: " + hand.getType().name());
+                //Bukkit.getLogger().info("Not hit with gold: " + hand.getType().name());
                 return;
         }
 
@@ -105,21 +177,22 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
         var c = testForLetter(e.getPlayer(), testBlock);
         if(c == '\0')
         {
-            Bukkit.getLogger().info("Not a letter block: " + testBlock.getDrops());
+            //Bukkit.getLogger().info("Not a letter block: " + testBlock.getDrops());
             return;
         }
         var lateralDirection = checkLateralBlocks(e.getPlayer(), testBlock);
         StringBuilder outString = new StringBuilder();
         if(lateralDirection.isValid())
         {
-            while((c = testForLetter(e.getPlayer(), testBlock) )!= '\0')
+            while(c != '\0')
             {
                 outString.append(c);
                 testBlock = offsetBlock(testBlock, lateralDirection);
+                c = testForLetter(e.getPlayer(), testBlock);
             }
         }
         Bukkit.getLogger().info(outString.toString());
-        if(WordDict.Words.contains(outString.toString()))
+        if(WordDict.Words.contains(outString.toString().toLowerCase(Locale.ROOT)))
         {
             Bukkit.getLogger().info("Hit");
         }
@@ -129,6 +202,11 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
         }
     }
 
+    /**
+     * @param testBlock
+     * @param lateralDirection
+     * @return
+     */
     private Block offsetBlock(Block testBlock, LateralDirection lateralDirection)
     {
         var x = testBlock.getX() + lateralDirection.xOffset;
@@ -137,6 +215,11 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
         return testBlock.getWorld().getBlockAt(x, y, z);
     }
 
+    /**
+     * @param player
+     * @param testBlock
+     * @return
+     */
     private LateralDirection checkLateralBlocks(Player player, Block testBlock)
     {
         var retValue = new LateralDirection(0, 0) ;
@@ -145,7 +228,6 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
         var y = testBlock.getY();
         var z = testBlock.getZ();
 
-        //TBD: is this xyz protected by grief prevention?
 
         boolean xUp = testForLetter( player, world.getBlockAt(x + 1, y, z)) != '\0';
         boolean xDown = testForLetter( player, world.getBlockAt(x - 1, y, z)) != '\0';
@@ -170,9 +252,13 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
         }
 
         return retValue;
-
     }
 
+    /**
+     * @param player
+     * @param testBlock
+     * @return
+     */
     char testForLetter(Player player, Block testBlock)
     {
         if(protectedSpot(player, testBlock.getLocation(), testBlock))
@@ -180,16 +266,35 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
             Bukkit.getLogger().info("Part of word is protected: " + testBlock.getLocation());
             return '\0';
         }
-        AtomicReference<String> match = new AtomicReference<>("");
-        var variation = getCustomVariation(testBlock);
-        if(Arrays.stream(LetterFactors.values()).anyMatch((v) -> variation == v.customVariation))
+        if(!(testBlock.getState().getBlockData() instanceof NoteBlock))
         {
-            return match.get().toLowerCase(Locale.ROOT).toCharArray()[0];
+            //Bukkit.getLogger().info("Block is not a noteblock");
+            return '\0';
+        }
+        AtomicReference<Character> match = new AtomicReference<>('\0');
+        var variation = getCustomVariation(testBlock);
+        //Bukkit.getLogger().info("Variation: " + variation);
+        if(Arrays.stream(LetterFactors.values()).anyMatch((v) -> {
+            boolean found = variation == v.customVariation;
+            if(found)
+            {
+                match.set(v.character);
+            }
+            return found;
+        }))
+        {
+            //Bukkit.getLogger().info("Matched: " + match);
+            return match.get();
         }
         return '\0';
     }
 
+    /**
+     * @param block
+     * @return
+     */
     int getCustomVariation(Block block) {
+        //Bukkit.getLogger().info("Block is noteblock: " + (block.getState().getBlockData() instanceof NoteBlock));
         NoteBlock noteBlock  = (NoteBlock) block.getState().getBlockData();
         NoteBlockMechanic mech = NoteBlockMechanicFactory.getBlockMechanic((int) (noteBlock
                 .getInstrument().getType()) * 25 + (int) noteBlock.getNote().getId()
@@ -197,24 +302,20 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
         return mech.getCustomVariation();
     }
 
+    /**
+     * @param player
+     * @param location
+     * @param block
+     * @return
+     */
     boolean protectedSpot(Player player, Location location, Block block)
     {
-
-        GriefPrevention griefPrevention = null;
-        try {
-            griefPrevention = GriefPrevention.instance;
-        }
-        catch(Exception e)
-        {
-
-            Bukkit.getLogger().info(e.getLocalizedMessage());
-
-        }
         if(griefPrevention != null && griefPrevention.allowBreak(player, block, location) != null){
             return true;
         }
 
-        if(worldGuard != null && !worldGuard.canBreak(player, location))
+        if(worldGuardPlugin != null &&
+                !worldGuardPlugin.createProtectionQuery().testBlockBreak(player, block ))
         {
             return true;
         }
@@ -222,54 +323,10 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
         return ourConfigProtects(location);
     }
 
-    class simpleTuple<T, U>
-    {
-        public T first;
-        public U second;
-        simpleTuple(T first, U second)
-        {
-            this.first = first;
-            this.second = second;
-        }
-
-    }
-
-    class  simplerTuple<T> extends simpleTuple<T, T>
-    {
-        simplerTuple(T first, T second) {
-
-            super(first, second);
-        }
-    }
-
-    class LocationPair extends simplerTuple<Location>
-    {
-        LocationPair(Location first, Location second)
-        {
-            super(first, second);
-        }
-
-        public boolean isValid() {
-            return first != null && second != null &&
-            first.getWorld() == second.getWorld();
-        }
-
-        public boolean check(Location location) {
-            return location.getWorld() == first.getWorld() &&
-                    inMcRange(location.getX(), first.getX(), second.getX()) &&
-                    inMcRange(location.getZ(), first.getZ(), second.getZ());
-
-        }
-
-        private boolean inMcRange(double x, double x1, double x2) {
-            if(x1 > x2)
-            {
-                return x <= x1 && x >= x2;
-            }
-            return x >= x1 && x <= x2;
-        }
-    }
-
+    /**
+     * @param location
+     * @return
+     */
     private boolean ourConfigProtects(Location location)
     {
         var exclude = new LocationPair(
@@ -285,12 +342,7 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
             return true;
         }
 
-        if(include.isValid() && !include.check(location))
-        {
-            return true;
-        }
-
-        return false;
+        return include.isValid() && !include.check(location);
 
     }
 }
