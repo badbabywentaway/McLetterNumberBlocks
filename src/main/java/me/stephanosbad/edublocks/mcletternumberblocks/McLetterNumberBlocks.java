@@ -5,6 +5,7 @@ import me.stephanosbad.edublocks.mcletternumberblocks.Items.ItemManager;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import static org.bukkit.Bukkit.getPluginManager;
@@ -37,6 +38,11 @@ public final class McLetterNumberBlocks extends JavaPlugin {
         configDataHandler = new ConfigDataHandler(this);
         try {
             configDataHandler.loadConfig();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            WordDict.init(this);
         } catch (IOException e) {
             e.printStackTrace();
         }

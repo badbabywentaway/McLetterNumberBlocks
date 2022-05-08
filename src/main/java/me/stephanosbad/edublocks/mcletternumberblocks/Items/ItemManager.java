@@ -182,19 +182,27 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
         }
         var lateralDirection = checkLateralBlocks(e.getPlayer(), testBlock);
         StringBuilder outString = new StringBuilder();
+        List<Location> blockArray = new ArrayList<>(List.of());
         if(lateralDirection.isValid())
         {
             while(c != '\0')
             {
+                blockArray.add(testBlock.getLocation());
                 outString.append(c);
                 testBlock = offsetBlock(testBlock, lateralDirection);
                 c = testForLetter(e.getPlayer(), testBlock);
             }
         }
-        Bukkit.getLogger().info(outString.toString());
-        if(WordDict.Words.contains(outString.toString().toLowerCase(Locale.ROOT)))
+        Bukkit.getLogger().info(outString + " in dictionary of " + WordDict.singleton.Words.size());
+        if(WordDict.singleton.Words.contains(outString.toString().toLowerCase(Locale.ROOT)))
         {
+            //e.setDropItems(false);
+            e.setCancelled(true);
             Bukkit.getLogger().info("Hit");
+            for( var locationOfBlock: blockArray)
+            {
+                e.getBlock().getWorld().getBlockAt(locationOfBlock).setType(Material.AIR);
+            }
         }
         else
         {
