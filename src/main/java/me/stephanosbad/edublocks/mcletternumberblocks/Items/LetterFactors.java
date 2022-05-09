@@ -60,7 +60,7 @@ public enum LetterFactors {
     /**
      *
      */
-    private final double frequencyFactor;
+    public final double frequencyFactor;
 
     /**
      *

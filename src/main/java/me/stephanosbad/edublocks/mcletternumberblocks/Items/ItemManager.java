@@ -24,7 +24,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
-
+import me.stephanosbad.edublocks.mcletternumberblocks.utility.SimpleTuple;
 /**
  *
  */
@@ -174,8 +174,9 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
         }
 
         var testBlock = e.getBlock();
+        var score = 0D;
         var c = testForLetter(e.getPlayer(), testBlock);
-        if(c == '\0')
+        if(c.first == '\0')
         {
             //Bukkit.getLogger().info("Not a letter block: " + testBlock.getDrops());
             return;
@@ -183,12 +184,14 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
         var lateralDirection = checkLateralBlocks(e.getPlayer(), testBlock);
         StringBuilder outString = new StringBuilder();
         List<Location> blockArray = new ArrayList<>(List.of());
+
         if(lateralDirection.isValid())
         {
-            while(c != '\0')
+            while(c.first != '\0')
             {
+                score += c.second + 10;
                 blockArray.add(testBlock.getLocation());
-                outString.append(c);
+                outString.append(c.first);
                 testBlock = offsetBlock(testBlock, lateralDirection);
                 c = testForLetter(e.getPlayer(), testBlock);
             }
@@ -198,7 +201,8 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
         {
             //e.setDropItems(false);
             e.setCancelled(true);
-            Bukkit.getLogger().info("Hit");
+            Bukkit.getLogger().info("Hit: " + score);
+
             for( var locationOfBlock: blockArray)
             {
                 e.getBlock().getWorld().getBlockAt(locationOfBlock).setType(Material.AIR);
@@ -237,10 +241,10 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
         var z = testBlock.getZ();
 
 
-        boolean xUp = testForLetter( player, world.getBlockAt(x + 1, y, z)) != '\0';
-        boolean xDown = testForLetter( player, world.getBlockAt(x - 1, y, z)) != '\0';
-        boolean zUp = testForLetter( player, world.getBlockAt(x, y, z + 1)) != '\0';
-        boolean zDown = testForLetter( player, world.getBlockAt(x, y, z - 1)) != '\0';
+        boolean xUp = testForLetter( player, world.getBlockAt(x + 1, y, z)).first != '\0';
+        boolean xDown = testForLetter( player, world.getBlockAt(x - 1, y, z)).first != '\0';
+        boolean zUp = testForLetter( player, world.getBlockAt(x, y, z + 1)).first != '\0';
+        boolean zDown = testForLetter( player, world.getBlockAt(x, y, z - 1)).first != '\0';
 
         if(xUp && !xDown && !zUp && !zDown)
         {
@@ -267,34 +271,35 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
      * @param testBlock
      * @return
      */
-    char testForLetter(Player player, Block testBlock)
+    SimpleTuple<Character, Double> testForLetter(Player player, Block testBlock)
     {
         if(protectedSpot(player, testBlock.getLocation(), testBlock))
         {
             Bukkit.getLogger().info("Part of word is protected: " + testBlock.getLocation());
-            return '\0';
+            return new SimpleTuple('\0', 0);
         }
         if(!(testBlock.getState().getBlockData() instanceof NoteBlock))
         {
             //Bukkit.getLogger().info("Block is not a noteblock");
-            return '\0';
+            return new SimpleTuple('\0', 0);
         }
-        AtomicReference<Character> match = new AtomicReference<>('\0');
+        AtomicReference<SimpleTuple<Character, Double>> match = new AtomicReference<>(new SimpleTuple<>('\0', 0D));
         var variation = getCustomVariation(testBlock);
         //Bukkit.getLogger().info("Variation: " + variation);
         if(Arrays.stream(LetterFactors.values()).anyMatch((v) -> {
             boolean found = variation == v.customVariation;
             if(found)
             {
-                match.set(v.character);
+                match.set(new SimpleTuple<>(v.character, v.frequencyFactor));
+
             }
             return found;
         }))
         {
             //Bukkit.getLogger().info("Matched: " + match);
-            return match.get();
+            return match.get() ;
         }
-        return '\0';
+        return new SimpleTuple('\0', 0);
     }
 
     /**
