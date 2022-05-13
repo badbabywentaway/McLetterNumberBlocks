@@ -1,6 +1,8 @@
 package me.stephanosbad.edublocks.mcletternumberblocks;
 
+import me.stephanosbad.edublocks.mcletternumberblocks.utility.LocationPair;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -66,5 +68,23 @@ public class ConfigDataHandler {
             file.getParentFile().mkdirs();
         }
         file.createNewFile();
+        writeToYaml();
+
+    }
+    public void writeToYaml() throws IOException {
+        var loc = SampleLocationPair();
+        configuration.set("exclude/from", loc.first);
+        configuration.set("exclude/to", loc.second);
+        configuration.save(file);
+
+    }
+    public LocationPair SampleLocationPair()
+    {
+        return new LocationPair
+                (
+                        new Location(plugin.getServer().getWorld( "world"), -10, 0, -10 ),
+                        new Location(plugin.getServer().getWorld( "world"), 10, 0, 10 )
+                );
     }
 }
+

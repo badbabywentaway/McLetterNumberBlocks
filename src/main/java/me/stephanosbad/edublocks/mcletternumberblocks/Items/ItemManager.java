@@ -59,37 +59,28 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
     /**
      * @param localPlugin
      */
-    public ItemManager(McLetterNumberBlocks localPlugin)
-    {
+    public ItemManager(McLetterNumberBlocks localPlugin) {
         this.plugin = localPlugin;
         try {
             worldGuardPlugin = WorldGuardPlugin.inst();
             worldGuard = WorldGuard.getInstance();
-            if(worldGuardPlugin != null && worldGuard != null) {
+            if (worldGuardPlugin != null && worldGuard != null) {
                 Bukkit.getLogger().info("WorldGuard found.");
-            }
-            else
-            {
+            } else {
                 throw new NullPointerException("Class variable did not instantiate");
             }
-        }
-        catch(Exception | Error e)
-        {
+        } catch (Exception | Error e) {
             Bukkit.getLogger().info("WorldGuard not available.");
         }
 
         try {
             griefPrevention = GriefPrevention.instance;
-            if(griefPrevention != null) {
+            if (griefPrevention != null) {
                 Bukkit.getLogger().info("GriefPrevention found.");
-            }
-            else
-            {
+            } else {
                 throw new NullPointerException("Class variable did not instantiate");
             }
-        }
-        catch(Exception | Error e)
-        {
+        } catch (Exception | Error e) {
             Bukkit.getLogger().info("GriefPrevention not available.");
         }
 
@@ -132,8 +123,7 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
             //If there is no silk touch on it
             if (list.contains(e.getBlock().getBlockData().getMaterial()) && Math.random() < 0.05) {
                 woodBlockBreak(e);
-            }
-            else {
+            } else {
                 letterBlockBreak(e);
             }
         }
@@ -145,8 +135,7 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
     private void woodBlockBreak(BlockBreakEvent e) {
         var block = LetterFactors.randomPickOraxenBlock();
         var player = e.getPlayer();
-        if(protectedSpot(player, e.getBlock().getLocation(), e.getBlock()))
-        {
+        if (protectedSpot(player, e.getBlock().getLocation(), e.getBlock())) {
             Bukkit.getLogger().info("Cannot drop letter blocks in protected area: " + e.getBlock().getLocation());
             return;
         }
@@ -160,24 +149,22 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
     /**
      * @param e
      */
-    public void letterBlockBreak(BlockBreakEvent e)
-    {
+    public void letterBlockBreak(BlockBreakEvent e) {
         var hand = e.getPlayer().getInventory().getItemInMainHand();
 
-        if(protectedSpot(e.getPlayer(), e.getBlock().getLocation(), e.getBlock())) {
+        if (protectedSpot(e.getPlayer(), e.getBlock().getLocation(), e.getBlock())) {
             Bukkit.getLogger().info("Protected block: " + e.getBlock().getLocation());
             return;
         }
-        if(!hand.getType().name().toLowerCase(Locale.ROOT).contains("gold")) {
-                //Bukkit.getLogger().info("Not hit with gold: " + hand.getType().name());
-                return;
+        if (!hand.getType().name().toLowerCase(Locale.ROOT).contains("gold")) {
+            //Bukkit.getLogger().info("Not hit with gold: " + hand.getType().name());
+            return;
         }
 
         var testBlock = e.getBlock();
         var score = 0D;
         var c = testForLetter(e.getPlayer(), testBlock);
-        if(c.first == '\0')
-        {
+        if (c.first == '\0') {
             //Bukkit.getLogger().info("Not a letter block: " + testBlock.getDrops());
             return;
         }
@@ -185,10 +172,8 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
         StringBuilder outString = new StringBuilder();
         List<Location> blockArray = new ArrayList<>(List.of());
 
-        if(lateralDirection.isValid())
-        {
-            while(c.first != '\0')
-            {
+        if (lateralDirection.isValid()) {
+            while (c.first != '\0') {
                 score += c.second + 10;
                 blockArray.add(testBlock.getLocation());
                 outString.append(c.first);
@@ -196,21 +181,17 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
                 c = testForLetter(e.getPlayer(), testBlock);
             }
         }
-        Bukkit.getLogger().info(outString + " in dictionary of " + WordDict.singleton.Words.size());
-        if(WordDict.singleton.Words.contains(outString.toString().toLowerCase(Locale.ROOT)))
-        {
+        //Bukkit.getLogger().info(outString + " in dictionary of " + WordDict.singleton.Words.size());
+        if (WordDict.singleton.Words.contains(outString.toString().toLowerCase(Locale.ROOT))) {
             //e.setDropItems(false);
             e.setCancelled(true);
-            Bukkit.getLogger().info("Hit: " + score);
+            e.getPlayer().sendMessage("Hit: " + score);
 
-            for( var locationOfBlock: blockArray)
-            {
+            for (var locationOfBlock : blockArray) {
                 e.getBlock().getWorld().getBlockAt(locationOfBlock).setType(Material.AIR);
             }
-        }
-        else
-        {
-            Bukkit.getLogger().info("Miss");
+        } else {
+            e.getPlayer().sendMessage("Miss");
         }
     }
 
@@ -219,8 +200,7 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
      * @param lateralDirection
      * @return
      */
-    private Block offsetBlock(Block testBlock, LateralDirection lateralDirection)
-    {
+    private Block offsetBlock(Block testBlock, LateralDirection lateralDirection) {
         var x = testBlock.getX() + lateralDirection.xOffset;
         var y = testBlock.getY();
         var z = testBlock.getZ() + lateralDirection.zOffset;
@@ -232,34 +212,26 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
      * @param testBlock
      * @return
      */
-    private LateralDirection checkLateralBlocks(Player player, Block testBlock)
-    {
-        var retValue = new LateralDirection(0, 0) ;
+    private LateralDirection checkLateralBlocks(Player player, Block testBlock) {
+        var retValue = new LateralDirection(0, 0);
         var world = testBlock.getWorld();
         var x = testBlock.getX();
         var y = testBlock.getY();
         var z = testBlock.getZ();
 
 
-        boolean xUp = testForLetter( player, world.getBlockAt(x + 1, y, z)).first != '\0';
-        boolean xDown = testForLetter( player, world.getBlockAt(x - 1, y, z)).first != '\0';
-        boolean zUp = testForLetter( player, world.getBlockAt(x, y, z + 1)).first != '\0';
-        boolean zDown = testForLetter( player, world.getBlockAt(x, y, z - 1)).first != '\0';
+        boolean xUp = testForLetter(player, world.getBlockAt(x + 1, y, z)).first != '\0';
+        boolean xDown = testForLetter(player, world.getBlockAt(x - 1, y, z)).first != '\0';
+        boolean zUp = testForLetter(player, world.getBlockAt(x, y, z + 1)).first != '\0';
+        boolean zDown = testForLetter(player, world.getBlockAt(x, y, z - 1)).first != '\0';
 
-        if(xUp && !xDown && !zUp && !zDown)
-        {
+        if (xUp && !xDown && !zUp && !zDown) {
             retValue.xOffset = 1;
-        }
-        else if (!xUp && xDown && !zUp && !zDown)
-        {
+        } else if (!xUp && xDown && !zUp && !zDown) {
             retValue.xOffset = -1;
-        }
-        else if (!xUp && !xDown && zUp && !zDown)
-        {
+        } else if (!xUp && !xDown && zUp && !zDown) {
             retValue.zOffset = 1;
-        }
-        else if (!xUp && !xDown && !zUp && zDown)
-        {
+        } else if (!xUp && !xDown && !zUp && zDown) {
             retValue.zOffset = -1;
         }
 
@@ -271,33 +243,28 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
      * @param testBlock
      * @return
      */
-    SimpleTuple<Character, Double> testForLetter(Player player, Block testBlock)
-    {
-        if(protectedSpot(player, testBlock.getLocation(), testBlock))
-        {
+    SimpleTuple<Character, Double> testForLetter(Player player, Block testBlock) {
+        if (protectedSpot(player, testBlock.getLocation(), testBlock)) {
             Bukkit.getLogger().info("Part of word is protected: " + testBlock.getLocation());
             return new SimpleTuple('\0', 0);
         }
-        if(!(testBlock.getState().getBlockData() instanceof NoteBlock))
-        {
+        if (!(testBlock.getState().getBlockData() instanceof NoteBlock)) {
             //Bukkit.getLogger().info("Block is not a noteblock");
             return new SimpleTuple('\0', 0);
         }
         AtomicReference<SimpleTuple<Character, Double>> match = new AtomicReference<>(new SimpleTuple<>('\0', 0D));
         var variation = getCustomVariation(testBlock);
         //Bukkit.getLogger().info("Variation: " + variation);
-        if(Arrays.stream(LetterFactors.values()).anyMatch((v) -> {
+        if (Arrays.stream(LetterFactors.values()).anyMatch((v) -> {
             boolean found = variation == v.customVariation;
-            if(found)
-            {
+            if (found) {
                 match.set(new SimpleTuple<>(v.character, v.frequencyFactor));
 
             }
             return found;
-        }))
-        {
+        })) {
             //Bukkit.getLogger().info("Matched: " + match);
-            return match.get() ;
+            return match.get();
         }
         return new SimpleTuple('\0', 0);
     }
@@ -308,7 +275,7 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
      */
     int getCustomVariation(Block block) {
         //Bukkit.getLogger().info("Block is noteblock: " + (block.getState().getBlockData() instanceof NoteBlock));
-        NoteBlock noteBlock  = (NoteBlock) block.getState().getBlockData();
+        NoteBlock noteBlock = (NoteBlock) block.getState().getBlockData();
         NoteBlockMechanic mech = NoteBlockMechanicFactory.getBlockMechanic((int) (noteBlock
                 .getInstrument().getType()) * 25 + (int) noteBlock.getNote().getId()
                 + (noteBlock.isPowered() ? 400 : 0) - 26);
@@ -321,15 +288,13 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
      * @param block
      * @return
      */
-    boolean protectedSpot(Player player, Location location, Block block)
-    {
-        if(griefPrevention != null && griefPrevention.allowBreak(player, block, location) != null){
+    boolean protectedSpot(Player player, Location location, Block block) {
+        if (griefPrevention != null && griefPrevention.allowBreak(player, block, location) != null) {
             return true;
         }
 
-        if(worldGuardPlugin != null &&
-                !worldGuardPlugin.createProtectionQuery().testBlockBreak(player, block ))
-        {
+        if (worldGuardPlugin != null &&
+                !worldGuardPlugin.createProtectionQuery().testBlockBreak(player, block)) {
             return true;
         }
 
@@ -340,8 +305,7 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
      * @param location
      * @return
      */
-    private boolean ourConfigProtects(Location location)
-    {
+    private boolean ourConfigProtects(Location location) {
         var exclude = new LocationPair(
                 plugin.configDataHandler.configuration.getLocation("exclude/from", null),
                 plugin.configDataHandler.configuration.getLocation("exclude/to", null));
@@ -350,12 +314,12 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
                 plugin.configDataHandler.configuration.getLocation("include/from", null),
                 plugin.configDataHandler.configuration.getLocation("include/to", null));
 
-        if(exclude.isValid() && exclude.check(location))
-        {
+        if (exclude.isValid() && exclude.check(location)) {
             return true;
         }
 
         return include.isValid() && !include.check(location);
 
     }
+
 }
