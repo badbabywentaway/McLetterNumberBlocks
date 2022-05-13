@@ -5,14 +5,12 @@ import org.bukkit.Location;
 /**
  *
  */
-public class LocationPair extends SimplerTuple<Location>
-{
+public class LocationPair extends SimplerTuple<Location> {
     /**
      * @param first
      * @param second
      */
-    public LocationPair(Location first, Location second)
-    {
+    public LocationPair(Location first, Location second) {
         super(first, second);
     }
 
@@ -42,8 +40,7 @@ public class LocationPair extends SimplerTuple<Location>
      * @return
      */
     private boolean inMcRange(double testValue, double x1, double x2) {
-        if(x1 > x2)
-        {
+        if (x1 > x2) {
             return testValue <= x1 && testValue >= x2;
         }
         return testValue >= x1 && testValue <= x2;

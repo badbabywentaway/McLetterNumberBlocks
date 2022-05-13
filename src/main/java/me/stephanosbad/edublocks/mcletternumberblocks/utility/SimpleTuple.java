@@ -4,8 +4,7 @@ package me.stephanosbad.edublocks.mcletternumberblocks.utility;
  * @param <T>
  * @param <U>
  */
-public class SimpleTuple<T, U>
-{
+public class SimpleTuple<T, U> {
     public T first;
     public U second;
 

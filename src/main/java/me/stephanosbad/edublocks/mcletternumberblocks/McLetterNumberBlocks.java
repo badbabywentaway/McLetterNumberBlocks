@@ -17,9 +17,9 @@ import static org.bukkit.Bukkit.getPluginManager;
 
 public final class McLetterNumberBlocks extends JavaPlugin {
 
-    private Economy econ = null;
+    public Economy econ = null;
     private Permission perms = null;
-    private boolean vaultEconomyEnabled = false;
+    public boolean vaultEconomyEnabled = false;
     /**
      *
      */
@@ -59,11 +59,10 @@ public final class McLetterNumberBlocks extends JavaPlugin {
             CompatibilitiesManager.addCompatibility("McLetterNumberBlocks", ItemManager.class);
         }
 
-        if (setupEconomy() )
-        {
+        if (setupEconomy()) {
             vaultEconomyEnabled = setupEconomy();
         }
-        System.out.println("Vault " + (vaultEconomyEnabled ? "confirmed" : "not available"));
+        System.out.println("Vault " + (vaultEconomyEnabled ? "confirmed." : "not available."));
         getPluginManager().registerEvents(new ItemManager(this), this);
     }
 
