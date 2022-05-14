@@ -2,33 +2,28 @@ package me.stephanosbad.edublocks.mcletternumberblocks.utility;
 
 import me.stephanosbad.edublocks.mcletternumberblocks.McLetterNumberBlocks;
 import net.milkbowl.vault.economy.EconomyResponse;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class VaultCurrencyReward extends CurrencyReward {
-    double minimumRewardCount;
-    McLetterNumberBlocks plugin;
+    private McLetterNumberBlocks plugin;
 
-    VaultCurrencyReward(McLetterNumberBlocks plugin, int minimumRewardCount, double minimumThreshold, double maximumAmountCap, double multiplier) {
+    public VaultCurrencyReward(McLetterNumberBlocks plugin, double minimumRewardCount, double multiplier, double minimumThreshold, double maximumRewardCap) {
+        super(minimumRewardCount, multiplier, minimumThreshold, maximumRewardCap);
         this.plugin = plugin;
-        this.multiplier = multiplier;
-        this.minimumRewardCount = minimumRewardCount;
-        this.minimumThreshold = minimumThreshold;
-        this.maximumAmountCap = maximumAmountCap;
     }
 
-
     @Override
-    void applyReward(Player player, double score) {
+    public void applyReward(Player player, double score) {
 
+        player.sendMessage("Currency Applied for score " + score );
         if (score < minimumThreshold) {
             return;
         }
 
         double netAmount = (score - minimumThreshold) * multiplier + minimumRewardCount;
 
-        if (netAmount > maximumAmountCap) {
-            netAmount = maximumAmountCap;
+        if (netAmount > maximumRewardCap) {
+            netAmount = maximumRewardCap;
         }
         double count = Math.round(netAmount);
         if (plugin.vaultEconomyEnabled) {

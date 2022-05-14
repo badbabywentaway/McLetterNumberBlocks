@@ -1,8 +1,17 @@
 package me.stephanosbad.edublocks.mcletternumberblocks.utility;
 
 public abstract class Reward {
-    public String name = "";
-    public double multiplier = 1;
+
+    Reward(double minimumRewardCount, double multiplier, double minimumThreshold, double maximumRewardCap)
+    {
+        this.minimumRewardCount = minimumRewardCount;
+        this.multiplier = multiplier;
+        this.minimumThreshold = minimumThreshold;
+        this.maximumRewardCap = maximumRewardCap;
+    }
+
+    public double minimumRewardCount;
+    public double multiplier;
     public double minimumThreshold;
-    public double maximumAmountCap;
+    public double maximumRewardCap;
 }

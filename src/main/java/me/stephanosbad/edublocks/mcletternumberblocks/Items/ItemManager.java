@@ -7,7 +7,7 @@ import io.th0rgal.oraxen.items.OraxenItems;
 import io.th0rgal.oraxen.mechanics.provided.gameplay.noteblock.NoteBlockMechanic;
 import io.th0rgal.oraxen.mechanics.provided.gameplay.noteblock.NoteBlockMechanicFactory;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
-import me.stephanosbad.edublocks.mcletternumberblocks.utility.LocationPair;
+import me.stephanosbad.edublocks.mcletternumberblocks.utility.*;
 import me.stephanosbad.edublocks.mcletternumberblocks.McLetterNumberBlocks;
 import me.stephanosbad.edublocks.mcletternumberblocks.WordDict;
 import org.bukkit.Bukkit;
@@ -21,10 +21,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
-import me.stephanosbad.edublocks.mcletternumberblocks.utility.SimpleTuple;
+
 /**
  *
  */
@@ -40,7 +41,8 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
             Material.DARK_OAK_LOG,
             Material.JUNGLE_LOG,
             Material.BIRCH_LOG);
-
+    private LocationPair exclude = null;
+    private LocationPair include = null;
     /**
      *
      */
@@ -55,6 +57,8 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
      *
      */
     GriefPrevention griefPrevention = null;
+
+    public List<Reward> rewards = new ArrayList<>();
 
     /**
      * @param localPlugin
@@ -84,6 +88,11 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
             Bukkit.getLogger().info("GriefPrevention not available.");
         }
 
+        try {
+            setRewards();
+        } catch (Exception | Error e) {
+            Bukkit.getLogger().info("Rewards not available.");
+        }
     }
 
     /**
@@ -107,7 +116,9 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
     }
 
     /**
-     * @param e
+     * combined action for wood block or letter block rewards
+     *
+     * @param e - block break event
      */
     @EventHandler
     public void onBreakWoodOrLetter(BlockBreakEvent e) {
@@ -190,8 +201,20 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
             for (var locationOfBlock : blockArray) {
                 e.getBlock().getWorld().getBlockAt(locationOfBlock).setType(Material.AIR);
             }
+            applyScore(e.getPlayer(), score);
         } else {
             e.getPlayer().sendMessage("Miss");
+        }
+    }
+
+    private void applyScore(Player player, double score) {
+        player.sendMessage(rewards.size() + " reward types");
+        for (var reward : rewards) {
+            if (reward instanceof VaultCurrencyReward) {
+                ((VaultCurrencyReward) reward).applyReward(player, score);
+            } else if (reward instanceof DropReward) {
+                ((DropReward) reward).applyReward(player.getLocation(), score);
+            }
         }
     }
 
@@ -212,13 +235,12 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
      * @param testBlock
      * @return
      */
-    private LateralDirection checkLateralBlocks(Player player, Block testBlock) {
+    private @NotNull LateralDirection checkLateralBlocks(Player player, @NotNull Block testBlock) {
         var retValue = new LateralDirection(0, 0);
         var world = testBlock.getWorld();
         var x = testBlock.getX();
         var y = testBlock.getY();
         var z = testBlock.getZ();
-
 
         boolean xUp = testForLetter(player, world.getBlockAt(x + 1, y, z)).first != '\0';
         boolean xDown = testForLetter(player, world.getBlockAt(x - 1, y, z)).first != '\0';
@@ -249,12 +271,10 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
             return new SimpleTuple('\0', 0);
         }
         if (!(testBlock.getState().getBlockData() instanceof NoteBlock)) {
-            //Bukkit.getLogger().info("Block is not a noteblock");
             return new SimpleTuple('\0', 0);
         }
         AtomicReference<SimpleTuple<Character, Double>> match = new AtomicReference<>(new SimpleTuple<>('\0', 0D));
         var variation = getCustomVariation(testBlock);
-        //Bukkit.getLogger().info("Variation: " + variation);
         if (Arrays.stream(LetterFactors.values()).anyMatch((v) -> {
             boolean found = variation == v.customVariation;
             if (found) {
@@ -263,7 +283,6 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
             }
             return found;
         })) {
-            //Bukkit.getLogger().info("Matched: " + match);
             return match.get();
         }
         return new SimpleTuple('\0', 0);
@@ -274,7 +293,6 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
      * @return
      */
     int getCustomVariation(Block block) {
-        //Bukkit.getLogger().info("Block is noteblock: " + (block.getState().getBlockData() instanceof NoteBlock));
         NoteBlock noteBlock = (NoteBlock) block.getState().getBlockData();
         NoteBlockMechanic mech = NoteBlockMechanicFactory.getBlockMechanic((int) (noteBlock
                 .getInstrument().getType()) * 25 + (int) noteBlock.getNote().getId()
@@ -306,20 +324,51 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
      * @return
      */
     private boolean ourConfigProtects(Location location) {
-        var exclude = new LocationPair(
-                plugin.configDataHandler.configuration.getLocation("exclude/from", null),
-                plugin.configDataHandler.configuration.getLocation("exclude/to", null));
 
-        var include = new LocationPair(
-                plugin.configDataHandler.configuration.getLocation("include/from", null),
-                plugin.configDataHandler.configuration.getLocation("include/to", null));
+        if (exclude == null) {
+            exclude = new LocationPair(
+                    plugin.configDataHandler.configuration.getLocation("exclude/from", null),
+                    plugin.configDataHandler.configuration.getLocation("exclude/to", null));
+        }
+
+        if (include == null) {
+            include = new LocationPair(
+                    plugin.configDataHandler.configuration.getLocation("include/from", null),
+                    plugin.configDataHandler.configuration.getLocation("include/to", null));
+        }
 
         if (exclude.isValid() && exclude.check(location)) {
             return true;
         }
 
         return include.isValid() && !include.check(location);
-
     }
 
+    private void setRewards() {
+        for (var t : RewardType.values()) {
+            switch (t) {
+                case VaultCurrency: {
+                    Class<VaultCurrencyReward> clazz = null;
+                    var reward = plugin.configDataHandler.configuration.getObject(t.toString(), clazz);
+                    if (reward != null) {
+                        rewards.add(reward);
+                    }
+                }
+                break;
+                case Drop: {
+                    Class<List<DropReward>> clazz = null;
+                    var rewardStack = plugin.configDataHandler.configuration.getObject(t.toString(), clazz);
+                    if (rewardStack != null) {
+                        for (var reward : rewardStack) {
+                            reward.setMaterial();
+                        }
+                        rewards.addAll(rewardStack);
+                    }
+                }
+                break;
+                default:
+                    break;
+            }
+        }
+    }
 }
