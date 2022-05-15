@@ -1,9 +1,13 @@
-package me.stephanosbad.edublocks.mcletternumberblocks.utility;
-
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
+package me.stephanosbad.edublocks.mcletternumberblocks.Rewards;
 
 public abstract class Reward {
 
+    /**
+     * @param minimumRewardCount
+     * @param multiplier
+     * @param minimumThreshold
+     * @param maximumRewardCap
+     */
     Reward(double minimumRewardCount, double multiplier, double minimumThreshold, double maximumRewardCap)
     {
         this.minimumRewardCount = minimumRewardCount;

@@ -1,15 +1,12 @@
 package me.stephanosbad.edublocks.mcletternumberblocks;
 
 import io.th0rgal.oraxen.compatibilities.CompatibilitiesManager;
+import me.stephanosbad.edublocks.mcletternumberblocks.Config.ConfigDataHandler;
 import me.stephanosbad.edublocks.mcletternumberblocks.Items.ItemManager;
-import me.stephanosbad.edublocks.mcletternumberblocks.utility.DropReward;
-import me.stephanosbad.edublocks.mcletternumberblocks.utility.RewardType;
-import me.stephanosbad.edublocks.mcletternumberblocks.utility.VaultCurrencyReward;
-import net.milkbowl.vault.chat.Chat;
+import me.stephanosbad.edublocks.mcletternumberblocks.Commands.CharBlock;
+import me.stephanosbad.edublocks.mcletternumberblocks.Utility.WordDict;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -70,9 +67,9 @@ public final class McLetterNumberBlocks extends JavaPlugin {
         System.out.println("Vault " + (vaultEconomyEnabled ? "confirmed." : "not available."));
 
 
-        if(getCommand(Charblock.CommandName) != null) {
-            getCommand(Charblock.CommandName).setExecutor(new Charblock());
-            getCommand(Charblock.CommandName).setTabCompleter(new Charblock());
+        if(getCommand(CharBlock.CommandName) != null) {
+            getCommand(CharBlock.CommandName).setExecutor(new CharBlock());
+            getCommand(CharBlock.CommandName).setTabCompleter(new CharBlock());
         }
         getPluginManager().registerEvents(new ItemManager(this), this);
     }

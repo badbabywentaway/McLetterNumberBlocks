@@ -1,4 +1,4 @@
-package me.stephanosbad.edublocks.mcletternumberblocks;
+package me.stephanosbad.edublocks.mcletternumberblocks.Commands;
 
 import io.th0rgal.oraxen.items.OraxenItems;
 import org.bukkit.Bukkit;
@@ -7,7 +7,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,16 +15,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class Charblock  implements CommandExecutor, TabCompleter {
+/**
+ *
+ */
+public class CharBlock implements CommandExecutor, TabCompleter {
 
+    /**
+     *
+     */
     public static String CommandName = "charblock";
 
+    /**
+     * @param sender
+     * @param command
+     * @param label
+     * @param args
+     * @return
+     */
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
 
         if (sender != sender.getServer().getConsoleSender())
             return true;
-
 
         // charblock <user> <string>
         if (args.length < 2) {

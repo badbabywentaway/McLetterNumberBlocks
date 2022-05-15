@@ -1,9 +1,9 @@
-package me.stephanosbad.edublocks.mcletternumberblocks;
+package me.stephanosbad.edublocks.mcletternumberblocks.Utility;
 
 import com.google.gson.Gson;
+import me.stephanosbad.edublocks.mcletternumberblocks.McLetterNumberBlocks;
 
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 

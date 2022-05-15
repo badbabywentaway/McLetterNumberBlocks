@@ -1,19 +1,15 @@
-package me.stephanosbad.edublocks.mcletternumberblocks;
+package me.stephanosbad.edublocks.mcletternumberblocks.Config;
 
-import me.stephanosbad.edublocks.mcletternumberblocks.utility.DropReward;
-import me.stephanosbad.edublocks.mcletternumberblocks.utility.LocationPair;
-import me.stephanosbad.edublocks.mcletternumberblocks.utility.RewardType;
-import me.stephanosbad.edublocks.mcletternumberblocks.utility.VaultCurrencyReward;
+import me.stephanosbad.edublocks.mcletternumberblocks.McLetterNumberBlocks;
+import me.stephanosbad.edublocks.mcletternumberblocks.Utility.LocationPair;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +20,13 @@ public class ConfigDataHandler {
      *
      */
     public YamlConfiguration configuration = null;
+    /**
+     *
+     */
     private File file = null;
+    /**
+     *
+     */
     private final McLetterNumberBlocks plugin;
 
     /**
@@ -108,33 +110,7 @@ public class ConfigDataHandler {
         List<Map<String, Object>> dropsConfiguration = List.of(dropReward,dropReward1);
         configuration.set("Drop", dropsConfiguration);
         configuration.save(file);
-
-        /*var dropsConfiguration =  configuration.cre
-        for(var a: dropsConfiguration)
-        {
-
-        }*/
-
-
-        /*var currencyReward = new VaultCurrencyReward(0,0,2000,0.5);
-        currencyReward.setPlugin(plugin);
-        configuration.set(RewardType.VaultCurrency.toString(), currencyReward);
-        var dropReward = new DropReward(
-                Material.IRON_INGOT.toString(),
-                1,
-                0.01,
-                100,
-                20);
-        var dropReward1 = new DropReward(
-                Material.GOLD_INGOT.toString(),
-                0,
-                0.01,
-                500,
-                50);
-
-        configuration.set(RewardType.Drop.toString(), List.of(dropReward, dropReward1));
-        configuration.save(file);*/
-    }
+     }
     public LocationPair SampleLocationPair()
     {
         return new LocationPair (

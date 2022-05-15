@@ -1,4 +1,4 @@
-package me.stephanosbad.edublocks.mcletternumberblocks.utility;
+package me.stephanosbad.edublocks.mcletternumberblocks.Utility;
 
 /**
  * @param <T>

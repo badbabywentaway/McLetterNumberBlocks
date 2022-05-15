@@ -7,9 +7,13 @@ import io.th0rgal.oraxen.items.OraxenItems;
 import io.th0rgal.oraxen.mechanics.provided.gameplay.noteblock.NoteBlockMechanic;
 import io.th0rgal.oraxen.mechanics.provided.gameplay.noteblock.NoteBlockMechanicFactory;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
-import me.stephanosbad.edublocks.mcletternumberblocks.utility.*;
+import me.stephanosbad.edublocks.mcletternumberblocks.Rewards.DropReward;
+import me.stephanosbad.edublocks.mcletternumberblocks.Rewards.Reward;
+import me.stephanosbad.edublocks.mcletternumberblocks.Rewards.RewardType;
+import me.stephanosbad.edublocks.mcletternumberblocks.Rewards.VaultCurrencyReward;
+import me.stephanosbad.edublocks.mcletternumberblocks.Utility.*;
 import me.stephanosbad.edublocks.mcletternumberblocks.McLetterNumberBlocks;
-import me.stephanosbad.edublocks.mcletternumberblocks.WordDict;
+import me.stephanosbad.edublocks.mcletternumberblocks.Utility.WordDict;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -31,8 +35,6 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> implements Listener {
 
-    VaultCurrencyReward vaultCurrencyReward = null;
-    List<DropReward> dropRewards = null;
     /**
      *
      */
@@ -43,8 +45,16 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
             Material.DARK_OAK_LOG,
             Material.JUNGLE_LOG,
             Material.BIRCH_LOG);
+    /**
+     *
+     */
     private LocationPair exclude = null;
+
+    /**
+     *
+     */
     private LocationPair include = null;
+
     /**
      *
      */
@@ -60,6 +70,9 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
      */
     GriefPrevention griefPrevention = null;
 
+    /**
+     *
+     */
     public List<Reward> rewards = new ArrayList<>();
 
     /**
@@ -124,19 +137,18 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
      */
     @EventHandler
     public void onBreakWoodOrLetter(BlockBreakEvent e) {
-        //e.getPlayer().sendMessage("Blam! " + e.getBlock().getBlockData().getMaterial().name());
-        //System.out.println("Blam! " + e.getBlock().getBlockData().getMaterial().name());
         var player = e.getPlayer();
         player.getInventory().getItemInMainHand();
         player.getInventory().getItemInMainHand().getEnchantments();
 
-        // TBD: leave if this block is grief prevented.
-
         if (!(player.getInventory().getItemInMainHand().containsEnchantment(Enchantment.SILK_TOUCH))) {
             //If there is no silk touch on it
             if (list.contains(e.getBlock().getBlockData().getMaterial()) && Math.random() < 0.05) {
+
+                //check wood
                 woodBlockBreak(e);
             } else {
+                //check letter
                 letterBlockBreak(e);
             }
         }
@@ -178,7 +190,6 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
         var score = 0D;
         var c = testForLetter(e.getPlayer(), testBlock);
         if (c.first == '\0') {
-            //Bukkit.getLogger().info("Not a letter block: " + testBlock.getDrops());
             return;
         }
         var lateralDirection = checkLateralBlocks(e.getPlayer(), testBlock);
@@ -194,9 +205,7 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
                 c = testForLetter(e.getPlayer(), testBlock);
             }
         }
-        //Bukkit.getLogger().info(outString + " in dictionary of " + WordDict.singleton.Words.size());
         if (WordDict.singleton.Words.contains(outString.toString().toLowerCase(Locale.ROOT))) {
-            //e.setDropItems(false);
             e.setCancelled(true);
             e.getPlayer().sendMessage("Hit: " + score);
 
@@ -270,10 +279,10 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
     SimpleTuple<Character, Double> testForLetter(Player player, Block testBlock) {
         if (protectedSpot(player, testBlock.getLocation(), testBlock)) {
             Bukkit.getLogger().info("Part of word is protected: " + testBlock.getLocation());
-            return new SimpleTuple('\0', 0);
+            return new SimpleTuple<>('\0', 0.0);
         }
         if (!(testBlock.getState().getBlockData() instanceof NoteBlock)) {
-            return new SimpleTuple('\0', 0);
+            return new SimpleTuple<>('\0', 0.0);
         }
         AtomicReference<SimpleTuple<Character, Double>> match = new AtomicReference<>(new SimpleTuple<>('\0', 0D));
         var variation = getCustomVariation(testBlock);
@@ -287,7 +296,7 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
         })) {
             return match.get();
         }
-        return new SimpleTuple('\0', 0);
+        return new SimpleTuple<>('\0', 0.0);
     }
 
     /**
@@ -354,18 +363,6 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
             switch (t) {
 
                 case VaultCurrency: {
-                    Bukkit.getLogger().info(t.toString() + ": reward#" + rewards.size());
-                    /*
-                    Class<VaultCurrencyReward> clazz = null;
-                    if(vaultCurrencyReward == null) {
-                        vaultCurrencyReward = plugin.configDataHandler.configuration.getObject(t.toString(), clazz);
-                    }
-                    if (vaultCurrencyReward != null) {
-                        vaultCurrencyReward.setPlugin(plugin);
-                        rewards.add(vaultCurrencyReward);
-                    }
-
-                     */
                     try {
                         var vaultConfig = configuration.getConfigurationSection("VaultCurrency");
                         double minimumRewardCount = vaultConfig.getDouble("minimumRewardCount");
@@ -377,21 +374,21 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
                         rewards.add(vaultReward);
                     } catch (Exception | Error e) {
                         Bukkit.getLogger().info(e.toString());
-                        //Bukkit.getLogger().info(e.getStackTrace().toString());
                     }
-                    Bukkit.getLogger().info(t.toString() + ": reward#" + rewards.size());
                 }
                 break;
                 case Drop: {
-                    Bukkit.getLogger().info(t.toString() + ": reward#" + rewards.size());
+
                     var listOfDropConfigs = configuration.getList("Drop");
 
-                    Bukkit.getLogger().info(listOfDropConfigs.toString() + ":" + listOfDropConfigs.size());
                     assert listOfDropConfigs != null;
                     for (var drop : listOfDropConfigs) {
                         try {
-                            Bukkit.getLogger().info(drop.toString() + ": reward#" + rewards.size());
-                            var dropParams = (Map<String, ?>) drop;
+                            if(!(drop instanceof Map) )
+                            {
+                                continue;
+                            }
+                            var dropParams = (Map<String, Object>) drop;
                             String materialName = (String) dropParams.get("materialName");
                             double minimumRewardCount = (double) dropParams.get("minimumRewardCount");
                             double multiplier = (double) dropParams.get("multiplier");
@@ -401,23 +398,8 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
 
                         } catch (Exception | Error e) {
                             Bukkit.getLogger().info(e.toString());
-                            //Bukkit.getLogger().info(e.getStackTrace().toString());
                         }
-                        Bukkit.getLogger().info(t.toString() + ": reward#" + rewards.size());
                     }
-                    /*
-                    Class<List<DropReward>> clazz = null;
-                    if(dropRewards == null) {
-                        dropRewards = plugin.configDataHandler.configuration.getObject(t.toString(), clazz);
-                    }
-                    if (dropRewards != null) {
-                        for (var reward : dropRewards) {
-                            reward.setMaterial();
-                        }
-                        rewards.addAll(dropRewards);
-                    }
-                    */
-
                 }
                 break;
                 default:
