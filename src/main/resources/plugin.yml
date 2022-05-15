@@ -8,5 +8,5 @@ depend: [ Oraxen ]
 softdepend: [ WorldGuard, GriefPrevention ]
 commands:
   charblock:
-    usage: /charblock <player> <item> <amount>
-    description: Give a letter or number block to a player.
+    usage: /charblock <player> <string>
+    description: Give a string of letter or number blocks to a player.

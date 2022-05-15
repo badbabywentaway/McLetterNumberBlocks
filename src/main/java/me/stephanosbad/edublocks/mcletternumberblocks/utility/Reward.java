@@ -1,5 +1,7 @@
 package me.stephanosbad.edublocks.mcletternumberblocks.utility;
 
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+
 public abstract class Reward {
 
     Reward(double minimumRewardCount, double multiplier, double minimumThreshold, double maximumRewardCap)

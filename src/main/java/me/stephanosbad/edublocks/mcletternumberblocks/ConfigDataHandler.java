@@ -8,12 +8,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ConfigDataHandler {
 
@@ -46,15 +49,23 @@ public class ConfigDataHandler {
             Bukkit.getLogger().info("File: " + file.getCanonicalPath());
         }
 
+
         configuration = YamlConfiguration.loadConfiguration(file);
+
+
         InputStream defaultStream = plugin.getResource(CONFIG_FILE_NAME);
-        if(defaultStream != null) {
+        createBlank();
+        configuration = YamlConfiguration.loadConfiguration(file);
+        /*if(defaultStream != null) {
             configuration.setDefaults( YamlConfiguration.loadConfiguration( new InputStreamReader(defaultStream)));
         }
         else{
-            createBlank();
-            throw (new IOException("Unable to extract config file " + file.getAbsolutePath() +". Blank recreated"));
-        }
+            //createBlank();
+            //configuration = YamlConfiguration.loadConfiguration(file);
+            //defaultStream = plugin.getResource(CONFIG_FILE_NAME);
+            //configuration.setDefaults( YamlConfiguration.loadConfiguration( new InputStreamReader(defaultStream)));
+            //throw (new IOException("Unable to extract config file " + file.getAbsolutePath() +". Blank recreated"));
+        }*/
     }
 
     /**
@@ -76,7 +87,37 @@ public class ConfigDataHandler {
         configuration.set("exclude.from", loc.first);
         configuration.set("exclude.to", loc.second);
 
-        var currencyReward = new VaultCurrencyReward(plugin,0,0,2000,0.5);
+        var vaultConfiguration = configuration.createSection("VaultCurrency");
+        vaultConfiguration.set( "minimumRewardCount", 0.0);
+        vaultConfiguration.set( "multiplier", 0.5);
+        vaultConfiguration.set( "minimumThreshold", 0.0);
+        vaultConfiguration.set( "maximumRewardCap", 2000.0);
+        configuration.save(file);
+        var dropReward = new HashMap<String, Object>();
+        dropReward.put("materialName", Material.IRON_INGOT.toString());
+        dropReward.put("minimumRewardCount", 1.0);
+        dropReward.put( "multiplier", 0.01);
+        dropReward.put( "minimumThreshold", 100.0);
+        dropReward.put( "maximumRewardCap", 20.0);
+        var dropReward1 = new HashMap<String, Object>();
+        dropReward1.put("materialName", Material.GOLD_INGOT.toString());
+        dropReward1.put("minimumRewardCount", 0.0);
+        dropReward1.put( "multiplier", 0.01);
+        dropReward1.put( "minimumThreshold", 500.0);
+        dropReward1.put( "maximumRewardCap", 50.0);
+        List<Map<String, Object>> dropsConfiguration = List.of(dropReward,dropReward1);
+        configuration.set("Drop", dropsConfiguration);
+        configuration.save(file);
+
+        /*var dropsConfiguration =  configuration.cre
+        for(var a: dropsConfiguration)
+        {
+
+        }*/
+
+
+        /*var currencyReward = new VaultCurrencyReward(0,0,2000,0.5);
+        currencyReward.setPlugin(plugin);
         configuration.set(RewardType.VaultCurrency.toString(), currencyReward);
         var dropReward = new DropReward(
                 Material.IRON_INGOT.toString(),
@@ -92,7 +133,7 @@ public class ConfigDataHandler {
                 50);
 
         configuration.set(RewardType.Drop.toString(), List.of(dropReward, dropReward1));
-        configuration.save(file);
+        configuration.save(file);*/
     }
     public LocationPair SampleLocationPair()
     {

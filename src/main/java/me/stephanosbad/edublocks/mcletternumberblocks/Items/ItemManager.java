@@ -31,6 +31,8 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> implements Listener {
 
+    VaultCurrencyReward vaultCurrencyReward = null;
+    List<DropReward> dropRewards = null;
     /**
      *
      */
@@ -327,14 +329,14 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
 
         if (exclude == null) {
             exclude = new LocationPair(
-                    plugin.configDataHandler.configuration.getLocation("exclude/from", null),
-                    plugin.configDataHandler.configuration.getLocation("exclude/to", null));
+                    plugin.configDataHandler.configuration.getLocation("exclude.from", null),
+                    plugin.configDataHandler.configuration.getLocation("exclude.to", null));
         }
 
         if (include == null) {
             include = new LocationPair(
-                    plugin.configDataHandler.configuration.getLocation("include/from", null),
-                    plugin.configDataHandler.configuration.getLocation("include/to", null));
+                    plugin.configDataHandler.configuration.getLocation("include.from", null),
+                    plugin.configDataHandler.configuration.getLocation("include.to", null));
         }
 
         if (exclude.isValid() && exclude.check(location)) {
@@ -345,25 +347,77 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
     }
 
     private void setRewards() {
+
         for (var t : RewardType.values()) {
+            var configuration = plugin.configDataHandler.configuration;
+            Bukkit.getLogger().info(t.toString());
             switch (t) {
+
                 case VaultCurrency: {
+                    Bukkit.getLogger().info(t.toString() + ": reward#" + rewards.size());
+                    /*
                     Class<VaultCurrencyReward> clazz = null;
-                    var reward = plugin.configDataHandler.configuration.getObject(t.toString(), clazz);
-                    if (reward != null) {
-                        rewards.add(reward);
+                    if(vaultCurrencyReward == null) {
+                        vaultCurrencyReward = plugin.configDataHandler.configuration.getObject(t.toString(), clazz);
                     }
+                    if (vaultCurrencyReward != null) {
+                        vaultCurrencyReward.setPlugin(plugin);
+                        rewards.add(vaultCurrencyReward);
+                    }
+
+                     */
+                    try {
+                        var vaultConfig = configuration.getConfigurationSection("VaultCurrency");
+                        double minimumRewardCount = vaultConfig.getDouble("minimumRewardCount");
+                        double multiplier = vaultConfig.getDouble("multiplier");
+                        double minimumThreshold = vaultConfig.getDouble("minimumThreshold");
+                        double maximumRewardCap = vaultConfig.getDouble("maximumRewardCap");
+                        var vaultReward = new VaultCurrencyReward(minimumRewardCount, multiplier, minimumThreshold, maximumRewardCap);
+                        vaultReward.setPlugin(plugin);
+                        rewards.add(vaultReward);
+                    } catch (Exception | Error e) {
+                        Bukkit.getLogger().info(e.toString());
+                        //Bukkit.getLogger().info(e.getStackTrace().toString());
+                    }
+                    Bukkit.getLogger().info(t.toString() + ": reward#" + rewards.size());
                 }
                 break;
                 case Drop: {
+                    Bukkit.getLogger().info(t.toString() + ": reward#" + rewards.size());
+                    var listOfDropConfigs = configuration.getList("Drop");
+
+                    Bukkit.getLogger().info(listOfDropConfigs.toString() + ":" + listOfDropConfigs.size());
+                    assert listOfDropConfigs != null;
+                    for (var drop : listOfDropConfigs) {
+                        try {
+                            Bukkit.getLogger().info(drop.toString() + ": reward#" + rewards.size());
+                            var dropParams = (Map<String, ?>) drop;
+                            String materialName = (String) dropParams.get("materialName");
+                            double minimumRewardCount = (double) dropParams.get("minimumRewardCount");
+                            double multiplier = (double) dropParams.get("multiplier");
+                            double minimumThreshold = (double) dropParams.get("minimumThreshold");
+                            double maximumRewardCap = (double) dropParams.get("maximumRewardCap");
+                            rewards.add(new DropReward(materialName, minimumRewardCount, multiplier, minimumThreshold, maximumRewardCap));
+
+                        } catch (Exception | Error e) {
+                            Bukkit.getLogger().info(e.toString());
+                            //Bukkit.getLogger().info(e.getStackTrace().toString());
+                        }
+                        Bukkit.getLogger().info(t.toString() + ": reward#" + rewards.size());
+                    }
+                    /*
                     Class<List<DropReward>> clazz = null;
-                    var rewardStack = plugin.configDataHandler.configuration.getObject(t.toString(), clazz);
-                    if (rewardStack != null) {
-                        for (var reward : rewardStack) {
+                    if(dropRewards == null) {
+                        dropRewards = plugin.configDataHandler.configuration.getObject(t.toString(), clazz);
+                    }
+                    if (dropRewards != null) {
+                        for (var reward : dropRewards) {
                             reward.setMaterial();
                         }
-                        rewards.addAll(rewardStack);
+                        rewards.addAll(dropRewards);
                     }
+                    */
+
                 }
                 break;
                 default:
