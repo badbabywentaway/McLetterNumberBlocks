@@ -1,12 +1,16 @@
 package me.stephanosbad.edublocks.mcletternumberblocks.Rewards;
 
+/**
+ * Reward to apply for scoring a word. Super class.
+ */
 public abstract class Reward {
 
     /**
-     * @param minimumRewardCount
-     * @param multiplier
-     * @param minimumThreshold
-     * @param maximumRewardCap
+     * Constructor
+     * @param minimumRewardCount - Minimum number of rewards to drop.
+     * @param multiplier - Multiply factor (by score)
+     * @param minimumThreshold - Minimum score to apply reward
+     * @param maximumRewardCap - Maximum number of rewards of this type.
      */
     Reward(double minimumRewardCount, double multiplier, double minimumThreshold, double maximumRewardCap)
     {

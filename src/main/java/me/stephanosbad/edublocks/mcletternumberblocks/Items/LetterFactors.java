@@ -9,7 +9,7 @@ import static java.lang.Character.toLowerCase;
 
 
 /**
- *
+ * Determine rarity score and Oraxen Noteblock variation via an enum
  */
 public enum LetterFactors {
 
@@ -43,44 +43,45 @@ public enum LetterFactors {
 
 
     /**
-     *
+     * letter block character
      */
     public final char character;
 
     /**
-     *
+     * Oraxen Noteblock variation
      */
     public final int customVariation;
 
     /**
-     *
+     * Frequency of letter found in real life via info received by Oxford publication.
      */
     private final double frequencyPercent;
 
     /**
-     *
+     * Score facter of letter
      */
     public final double frequencyFactor;
 
     /**
-     *
+     * Hit range low (randomizer)
      */
     private double hitLow;
 
     /**
-     *
+     * Hit range high (randomizer)
      */
     private double hitHigh;
 
     /**
-     *
+     * Oraxen ID
      */
     final String id;
 
     /**
-     * @param frequencyPercent
-     * @param frequencyFactor
-     * @param customVariation
+     * Constructor
+     * @param frequencyPercent - Frequency of letter found in real life via info received by Oxford publication.
+     * @param frequencyFactor - Score facter of letter
+     * @param customVariation - Oraxen noteblock variation
      */
     LetterFactors(double frequencyPercent, double frequencyFactor, int customVariation)
     {
@@ -92,8 +93,9 @@ public enum LetterFactors {
     }
 
     /**
-     * @param testValue
-     * @return
+     * Determine if letter is hit by randomizer
+     * @param testValue - hit value
+     * @return - Veracity of hit
      */
     private boolean isHit(double testValue)
     {
@@ -101,12 +103,13 @@ public enum LetterFactors {
     }
 
     /**
-     *
+     * Maximum hit value.
      */
     private static final double hitMax = sumAll();
 
     /**
-     * @return
+     * Maximum hit value.
+     * @return - Maximum hit value.
      */
     private static double sumAll()
     {
@@ -121,7 +124,8 @@ public enum LetterFactors {
     }
 
     /**
-     * @return
+     * rarity weighted random letter picker
+     * @return - picked letter
      */
     public static LetterFactors randomPick()
     {
@@ -130,7 +134,8 @@ public enum LetterFactors {
     }
 
     /**
-     * @return
+     * Letter block random picker. Weighted by rarity.
+     * @return Item stack of single letter block
      */
     public static ItemStack randomPickOraxenBlock()
     {

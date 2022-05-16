@@ -31,12 +31,12 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- *
+ * Heart of item control.
  */
 public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> implements Listener {
 
     /**
-     *
+     * Wood material list.
      */
     private final List<Material> list = Arrays.asList(
             Material.ACACIA_LOG,
@@ -46,37 +46,38 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
             Material.JUNGLE_LOG,
             Material.BIRCH_LOG);
     /**
-     *
+     * Exclusion zone for use of this plugin.
      */
     private LocationPair exclude = null;
 
     /**
-     *
+     * Inclusion zone for use of this plugin. If defined, acts as an exclusive include.
      */
     private LocationPair include = null;
 
     /**
-     *
+     * World Guard anti griefing tool. Accessor.
      */
     WorldGuard worldGuard = null;
 
     /**
-     *
+     * World Guard anti griefing tool. Plugin accessor.
      */
     WorldGuardPlugin worldGuardPlugin = null;
 
     /**
-     *
+     * Grief Prevention anti griefing tool. Accessor
      */
     GriefPrevention griefPrevention = null;
 
     /**
-     *
+     * Reward implementations
      */
     public List<Reward> rewards = new ArrayList<>();
 
     /**
-     * @param localPlugin
+     * Constructor
+     * @param localPlugin - Master plugin
      */
     public ItemManager(McLetterNumberBlocks localPlugin) {
         this.plugin = localPlugin;
@@ -111,17 +112,19 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
     }
 
     /**
-     * @param commandString
-     * @return
+     * Retrieve letter blocks. Right now Oraxen only.
+     * @param commandString - Name of oraxen item.
+     * @return - ItemStack of a single letter/number block
      */
     public static ItemStack getBlocks(String commandString) {
         return OraxenItems.getItemById(commandString).build();
     }
 
     /**
-     * @return
+     * Retrieve all character block names
+     * @return All Oraxen character block names.
      */
-    public static Set<String> getCharacterBlockNames() {
+    public static @NotNull Set<String> getCharacterBlockNames() {
         var retValue = new HashSet<String>();
 
         for (var letter : LetterFactors.values()) {
@@ -136,7 +139,7 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
      * @param e - block break event
      */
     @EventHandler
-    public void onBreakWoodOrLetter(BlockBreakEvent e) {
+    public void onBreakWoodOrLetter(@NotNull BlockBreakEvent e) {
         var player = e.getPlayer();
         player.getInventory().getItemInMainHand();
         player.getInventory().getItemInMainHand().getEnchantments();
@@ -155,7 +158,8 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
     }
 
     /**
-     * @param e
+     * Check if it was a wood block that was broken.
+     * @param e - break event.
      */
     private void woodBlockBreak(BlockBreakEvent e) {
         var block = LetterFactors.randomPickOraxenBlock();
@@ -172,7 +176,8 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
     }
 
     /**
-     * @param e
+     * Check if it was a letter block that was broken.
+     * @param e - break event.
      */
     public void letterBlockBreak(BlockBreakEvent e) {
         var hand = e.getPlayer().getInventory().getItemInMainHand();
@@ -218,7 +223,12 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
         }
     }
 
-    private void applyScore(Player player, double score) {
+    /**
+     * Apply the score to the player. Drops or cash.
+     * @param player - Player to apply score
+     * @param score - score
+     */
+    private void applyScore(@NotNull Player player, double score) {
         player.sendMessage(rewards.size() + " reward types");
         for (var reward : rewards) {
             if (reward instanceof VaultCurrencyReward) {
@@ -230,9 +240,10 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
     }
 
     /**
-     * @param testBlock
-     * @param lateralDirection
-     * @return
+     * Find block adjacent to another
+     * @param testBlock - block from which to find the adjacent
+     * @param lateralDirection - Direction in which to test
+     * @return adjacent block
      */
     private Block offsetBlock(Block testBlock, LateralDirection lateralDirection) {
         var x = testBlock.getX() + lateralDirection.xOffset;
@@ -242,9 +253,10 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
     }
 
     /**
-     * @param player
-     * @param testBlock
-     * @return
+     * Check the block for the next lateral block.
+     * @param player - player (used in grief protecting)
+     * @param testBlock - block under test
+     * @return Direction of block.
      */
     private @NotNull LateralDirection checkLateralBlocks(Player player, @NotNull Block testBlock) {
         var retValue = new LateralDirection(0, 0);
@@ -272,9 +284,10 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
     }
 
     /**
-     * @param player
-     * @param testBlock
-     * @return
+     * Test to see if this block is a letter block
+     * @param player - player who hit it. Used to null the result if letter block is grief protected.
+     * @param testBlock - block to test.
+     * @return - character of block and rarity score
      */
     SimpleTuple<Character, Double> testForLetter(Player player, Block testBlock) {
         if (protectedSpot(player, testBlock.getLocation(), testBlock)) {
@@ -300,8 +313,9 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
     }
 
     /**
-     * @param block
-     * @return
+     * Get "noteblock" variation code. When Oraxen obsoletes this, this will change.
+     * @param block - noteblock block
+     * @return - Oraxen's noteblock variation code
      */
     int getCustomVariation(Block block) {
         NoteBlock noteBlock = (NoteBlock) block.getState().getBlockData();
@@ -312,10 +326,11 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
     }
 
     /**
-     * @param player
-     * @param location
-     * @param block
-     * @return
+     * Determine if this location is protected from this player
+     * @param player - MC Player
+     * @param location - location to examine
+     * @param block - block to examine (some grief plugins require this)
+     * @return - verification that location is being protected
      */
     boolean protectedSpot(Player player, Location location, Block block) {
         if (griefPrevention != null && griefPrevention.allowBreak(player, block, location) != null) {
@@ -331,8 +346,9 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
     }
 
     /**
-     * @param location
-     * @return
+     * Determine if our config protects this location
+     * @param location - location to examine
+     * @return - verification that location is being protected
      */
     private boolean ourConfigProtects(Location location) {
 
@@ -355,8 +371,10 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
         return include.isValid() && !include.check(location);
     }
 
+    /**
+     * Setup rewards from config file
+     */
     private void setRewards() {
-
         for (var t : RewardType.values()) {
             var configuration = plugin.configDataHandler.configuration;
             Bukkit.getLogger().info(t.toString());
@@ -369,8 +387,7 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
                         double multiplier = vaultConfig.getDouble("multiplier");
                         double minimumThreshold = vaultConfig.getDouble("minimumThreshold");
                         double maximumRewardCap = vaultConfig.getDouble("maximumRewardCap");
-                        var vaultReward = new VaultCurrencyReward(minimumRewardCount, multiplier, minimumThreshold, maximumRewardCap);
-                        vaultReward.setPlugin(plugin);
+                        var vaultReward = new VaultCurrencyReward(plugin, minimumRewardCount, multiplier, minimumThreshold, maximumRewardCap);
                         rewards.add(vaultReward);
                     } catch (Exception | Error e) {
                         Bukkit.getLogger().info(e.toString());

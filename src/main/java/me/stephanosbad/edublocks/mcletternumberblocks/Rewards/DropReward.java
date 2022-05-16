@@ -5,16 +5,17 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 /**
- *
+ * Drop reward type.
  */
 public class DropReward extends Reward {
 
     /**
-     * @param materialName
-     * @param minimumRewardCount
-     * @param multiplier
-     * @param minimumThreshold
-     * @param maximumRewardCap
+     * Constructor
+     * @param materialName - Name of MC material to drop for rewards.
+     * @param minimumRewardCount - Minimum number of rewards to drop.
+     * @param multiplier - Multiply factor (by score)
+     * @param minimumThreshold - Minimum score to apply reward
+     * @param maximumRewardCap - Maximum number of rewards of this type.
      */
     public DropReward(String materialName, double minimumRewardCount, double multiplier, double minimumThreshold, double maximumRewardCap) {
         super( minimumRewardCount, multiplier,  minimumThreshold,  maximumRewardCap);
@@ -23,25 +24,26 @@ public class DropReward extends Reward {
     }
 
     /**
-     *
+     * Set material based on name
      */
-    public void setMaterial() {
+    private void setMaterial() {
         material = Material.valueOf(materialName);
     }
 
     /**
-     *
+     * MC material to drop for rewards.
      */
     private Material material;
 
     /**
-     *
+     * Name of MC material to drop for rewards.
      */
     public String materialName;
 
     /**
-     * @param location
-     * @param score
+     * Apply the reward. Drops are location specific.
+     * @param location - location to drop the reward.
+     * @param score - score in which to apply reward.
      */
     public void applyReward(Location location, double score) {
         double netAmount = (score >= minimumThreshold)

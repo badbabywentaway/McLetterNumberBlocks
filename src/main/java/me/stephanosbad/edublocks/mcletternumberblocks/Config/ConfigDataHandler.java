@@ -17,25 +17,28 @@ import java.util.Map;
 public class ConfigDataHandler {
 
     /**
-     *
+     * configuration loaded from yaml file
      */
     public YamlConfiguration configuration = null;
+
     /**
-     *
+     * file from which to load configuration
      */
     private File file = null;
+
     /**
-     *
+     * parent plugin reference
      */
     private final McLetterNumberBlocks plugin;
 
     /**
-     *
+     * hard coded config file name
      */
     static public String CONFIG_FILE_NAME = "config.yml";
 
     /**
-     * @param plugin
+     * Initializer
+     * @param plugin - parent plugin reference
      */
     public ConfigDataHandler(McLetterNumberBlocks plugin)
     {
@@ -43,7 +46,8 @@ public class ConfigDataHandler {
     }
 
     /**
-     * @throws IOException
+     * load config from file
+     * @throws IOException - file or folder issues
      */
     public void loadConfig() throws IOException {
         if(file == null) {
@@ -51,27 +55,17 @@ public class ConfigDataHandler {
             Bukkit.getLogger().info("File: " + file.getCanonicalPath());
         }
 
-
-        configuration = YamlConfiguration.loadConfiguration(file);
-
-
-        InputStream defaultStream = plugin.getResource(CONFIG_FILE_NAME);
-        createBlank();
-        configuration = YamlConfiguration.loadConfiguration(file);
-        /*if(defaultStream != null) {
-            configuration.setDefaults( YamlConfiguration.loadConfiguration( new InputStreamReader(defaultStream)));
+        if(!file.exists())
+        {
+            createBlank();
         }
-        else{
-            //createBlank();
-            //configuration = YamlConfiguration.loadConfiguration(file);
-            //defaultStream = plugin.getResource(CONFIG_FILE_NAME);
-            //configuration.setDefaults( YamlConfiguration.loadConfiguration( new InputStreamReader(defaultStream)));
-            //throw (new IOException("Unable to extract config file " + file.getAbsolutePath() +". Blank recreated"));
-        }*/
+        configuration = YamlConfiguration.loadConfiguration(file);
+        InputStream defaultStream = plugin.getResource(CONFIG_FILE_NAME);
     }
 
     /**
-     * @throws IOException
+     * Recreate default example file
+     * @throws IOException - file or folder issue
      */
     private void createBlank() throws IOException {
         if(file.exists()){
@@ -84,6 +78,12 @@ public class ConfigDataHandler {
         file.createNewFile();
         writeToYaml();
     }
+
+
+    /**
+     * Write default to yaml
+     * @throws IOException - file or folder issue
+     */
     public void writeToYaml() throws IOException {
         var loc = SampleLocationPair();
         configuration.set("exclude.from", loc.first);

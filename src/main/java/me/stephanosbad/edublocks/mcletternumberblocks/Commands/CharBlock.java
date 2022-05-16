@@ -16,31 +16,25 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- *
+ * Test command only executable from console. Gives a string of blocks to player.
+ *      charblock user blocks
+ *      user - player near which to drop naturally
+ *      blocks - string of block characters to drop naturally near player
  */
 public class CharBlock implements CommandExecutor, TabCompleter {
 
     /**
-     *
+     * String which to use for registering this command
      */
     public static String CommandName = "charblock";
 
-    /**
-     * @param sender
-     * @param command
-     * @param label
-     * @param args
-     * @return
-     */
     @Override
-    public boolean onCommand(CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
 
         if (sender != sender.getServer().getConsoleSender())
             return true;
 
-        // charblock <user> <string>
         if (args.length < 2) {
-
             return true;
         }
 
@@ -65,7 +59,7 @@ public class CharBlock implements CommandExecutor, TabCompleter {
 
     @Nullable
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String @NotNull [] args) {
         List<String> completions = new ArrayList<>();
         String mainArg;
 
