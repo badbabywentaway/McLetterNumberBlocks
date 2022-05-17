@@ -647,3 +647,75 @@ z_block:
         loots:
           - { oraxen_item: 9_block, probability: 1.0 }
 
+plus_block:
+  displayname: "<#D5D6D8>+ Block"
+  material: PAPER
+  Pack:
+    generate_model: false
+    model: default/plus
+  Mechanics:
+    noteblock:
+      break_sound: block.glass.break
+      place_sound: block.glass.place
+      custom_variation: 41
+      model: default/plus
+      hardness: 1
+      drop:
+        silktouch: false
+        loots:
+          - { oraxen_item: plus_block, probability: 1.0 }
+
+minus_block:
+  displayname: "<#D5D6D8>- Block"
+  material: PAPER
+  Pack:
+    generate_model: false
+    model: default/minus
+  Mechanics:
+    noteblock:
+      break_sound: block.glass.break
+      place_sound: block.glass.place
+      custom_variation: 42
+      model: default/minus
+      hardness: 1
+      drop:
+        silktouch: false
+        loots:
+          - { oraxen_item: minus_block, probability: 1.0 }
+
+multiply_block:
+  displayname: "<#D5D6D8>Multiply Block"
+  material: PAPER
+  Pack:
+    generate_model: false
+    model: default/multiply
+  Mechanics:
+    noteblock:
+      break_sound: block.glass.break
+      place_sound: block.glass.place
+      custom_variation: 43
+      model: default/multiply
+      hardness: 1
+      drop:
+        silktouch: false
+        loots:
+          - { oraxen_item: multiply_block, probability: 1.0 }
+
+divide_block:
+  displayname: "<#D5D6D8>Divide Block"
+  material: PAPER
+  Pack:
+    generate_model: false
+    model: default/division
+  Mechanics:
+    noteblock:
+      break_sound: block.glass.break
+      place_sound: block.glass.place
+      custom_variation: 44
+      model: default/division
+      hardness: 1
+      drop:
+        silktouch: false
+        loots:
+          - { oraxen_item: divide_block, probability: 1.0 }
+

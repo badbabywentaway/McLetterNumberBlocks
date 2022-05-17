@@ -7,6 +7,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,6 +23,30 @@ import java.util.Locale;
  *      blocks - string of block characters to drop naturally near player
  */
 public class CharBlock implements CommandExecutor, TabCompleter {
+
+
+    /**
+     * Non alphanumeric character references
+     */
+    enum NonAlphaNumBlocks{
+        PLUS('+', "plus_block"),
+        MINUS('-', "minus_block"),
+        MULTIPLY('*', "multiply_block"),
+        DIVISION('/', "divide_block");
+
+        public final char charVal;
+        public final String oraxenBlockName;
+
+        /**
+         * Constructor
+         * @param c - character
+         * @param blockName - block name in which to map
+         */
+        NonAlphaNumBlocks(char c, String blockName) {
+            this.charVal = c;
+            this.oraxenBlockName = blockName;
+        }
+    }
 
     /**
      * String which to use for registering this command
@@ -48,7 +73,15 @@ public class CharBlock implements CommandExecutor, TabCompleter {
         String characterString = args[1].toLowerCase(Locale.ROOT);
 
         for (var c : characterString.toCharArray()) {
-            var dropStack = OraxenItems.getItemById(c + "_block").build();
+            ItemStack dropStack = null;
+            for (var test : NonAlphaNumBlocks.values()) {
+                if (test.charVal == c) {
+                    dropStack = OraxenItems.getItemById(test.oraxenBlockName).build();
+                }
+            }
+            if (dropStack == null) {
+                dropStack = OraxenItems.getItemById(c + "_block").build();
+            }
             if (givePlayer.getLocation().getWorld() != null) {
                 givePlayer.getLocation().getWorld().dropItemNaturally(givePlayer.getLocation(), dropStack);
             }
