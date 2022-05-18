@@ -1,8 +1,11 @@
 package me.stephanosbad.edublocks.mcletternumberblocks.Rewards;
 
+import me.stephanosbad.edublocks.mcletternumberblocks.Utility.ColorPrint;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Drop reward type.
@@ -11,14 +14,15 @@ public class DropReward extends Reward {
 
     /**
      * Constructor
-     * @param materialName - Name of MC material to drop for rewards.
+     *
+     * @param materialName       - Name of MC material to drop for rewards.
      * @param minimumRewardCount - Minimum number of rewards to drop.
-     * @param multiplier - Multiply factor (by score)
-     * @param minimumThreshold - Minimum score to apply reward
-     * @param maximumRewardCap - Maximum number of rewards of this type.
+     * @param multiplier         - Multiply factor (by score)
+     * @param minimumThreshold   - Minimum score to apply reward
+     * @param maximumRewardCap   - Maximum number of rewards of this type.
      */
     public DropReward(String materialName, double minimumRewardCount, double multiplier, double minimumThreshold, double maximumRewardCap) {
-        super( minimumRewardCount, multiplier,  minimumThreshold,  maximumRewardCap);
+        super(minimumRewardCount, multiplier, minimumThreshold, maximumRewardCap);
         this.materialName = materialName;
         setMaterial();
     }
@@ -42,10 +46,12 @@ public class DropReward extends Reward {
 
     /**
      * Apply the reward. Drops are location specific.
+     *
+     * @param player - player.
      * @param location - location to drop the reward.
-     * @param score - score in which to apply reward.
+     * @param score    - score in which to apply reward.
      */
-    public void applyReward(Location location, double score) {
+    public void applyReward(@NotNull Player player, Location location, double score) {
         double netAmount = (score >= minimumThreshold)
                 ? (score - minimumThreshold) * multiplier + minimumRewardCount
                 : minimumRewardCount;
@@ -56,6 +62,9 @@ public class DropReward extends Reward {
         if (location.getWorld() == null) {
             return;
         }
-        location.getWorld().dropItemNaturally(location, new ItemStack(material, count));
+        if (count > 0) {
+            ColorPrint.sendPlayer(player, count + " x " + materialName);
+            location.getWorld().dropItemNaturally(location, new ItemStack(material, count));
+        }
     }
 }

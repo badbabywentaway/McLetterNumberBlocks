@@ -1,7 +1,9 @@
 package me.stephanosbad.edublocks.mcletternumberblocks.Rewards;
 
 import me.stephanosbad.edublocks.mcletternumberblocks.McLetterNumberBlocks;
+import me.stephanosbad.edublocks.mcletternumberblocks.Utility.ColorPrint;
 import net.milkbowl.vault.economy.EconomyResponse;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /**
@@ -44,7 +46,8 @@ public class VaultCurrencyReward extends CurrencyReward {
     @Override
     public void applyReward(Player player, double score) {
 
-        player.sendMessage("Currency Applied for score " + score );
+        ColorPrint.sendPlayer(player,"Currency for score " + score );
+
         double netAmount = (score >= minimumThreshold)
                 ? (score - minimumThreshold) * multiplier + minimumRewardCount
                 : minimumRewardCount;
@@ -52,11 +55,16 @@ public class VaultCurrencyReward extends CurrencyReward {
             netAmount = maximumRewardCap;
         }
         double count = Math.round(netAmount);
+        ColorPrint.sendPlayer(player, String.valueOf(count));
         if (plugin.vaultEconomyEnabled) {
             EconomyResponse r = plugin.econ.depositPlayer(player, count);
             if (!r.transactionSuccess()) {
                 System.out.println(r.errorMessage);
             }
+        }
+        else
+        {
+            ColorPrint.sendPlayer(player,"NOT!!!");
         }
     }
 }

@@ -1,6 +1,7 @@
 package me.stephanosbad.edublocks.mcletternumberblocks.Config;
 
 import me.stephanosbad.edublocks.mcletternumberblocks.McLetterNumberBlocks;
+import me.stephanosbad.edublocks.mcletternumberblocks.Utility.ColorPrint;
 import me.stephanosbad.edublocks.mcletternumberblocks.Utility.LocationPair;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

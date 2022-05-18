@@ -165,7 +165,6 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
         var block = LetterFactors.randomPickOraxenBlock();
         var player = e.getPlayer();
         if (protectedSpot(player, e.getBlock().getLocation(), e.getBlock())) {
-            Bukkit.getLogger().info("Cannot drop letter blocks in protected area: " + e.getBlock().getLocation());
             return;
         }
         if (block != null) {
@@ -187,7 +186,6 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
             return;
         }
         if (!hand.getType().name().toLowerCase(Locale.ROOT).contains("gold")) {
-            //Bukkit.getLogger().info("Not hit with gold: " + hand.getType().name());
             return;
         }
 
@@ -229,12 +227,11 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
      * @param score - score
      */
     private void applyScore(@NotNull Player player, double score) {
-        player.sendMessage(rewards.size() + " reward types");
         for (var reward : rewards) {
             if (reward instanceof VaultCurrencyReward) {
                 ((VaultCurrencyReward) reward).applyReward(player, score);
             } else if (reward instanceof DropReward) {
-                ((DropReward) reward).applyReward(player.getLocation(), score);
+                ((DropReward) reward).applyReward(player, player.getLocation(), score);
             }
         }
     }
@@ -377,7 +374,6 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
     private void setRewards() {
         for (var t : RewardType.values()) {
             var configuration = plugin.configDataHandler.configuration;
-            Bukkit.getLogger().info(t.toString());
             switch (t) {
 
                 case VaultCurrency: {
