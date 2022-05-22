@@ -75,11 +75,15 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
      */
     public List<Reward> rewards = new ArrayList<>();
 
+    public ItemManager()
+    {
+        this(null);
+    }
     /**
      * Constructor
      * @param localPlugin - Master plugin
      */
-    public ItemManager(McLetterNumberBlocks localPlugin) {
+    public ItemManager(McLetterNumberBlocks localPlugin ) {
         this.plugin = localPlugin;
         try {
             worldGuardPlugin = WorldGuardPlugin.inst();
