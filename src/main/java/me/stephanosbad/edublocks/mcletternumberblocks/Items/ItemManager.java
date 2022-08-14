@@ -155,11 +155,38 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
 
                 //check wood
                 woodBlockBreak(e);
-            } else {
+            } else  if(!numberBlockHit(e)){
                 //check letter
                 letterBlockBreak(e);
             }
         }
+    }
+
+    private boolean numberBlockHit(BlockBreakEvent e) {
+        var testBlock = e.getBlock();
+        var hand = e.getPlayer().getInventory().getItemInMainHand();
+        if (!hand.getType().name().toLowerCase(Locale.ROOT).contains("gold")) {
+            return false;
+        }
+        char c = testForNumber(testBlock);
+        if (c == '\0') {
+            return false;
+        }
+
+        Bukkit.getServer().getPluginManager().callEvent(new NumberHitEvent(e.getPlayer(), c));
+
+        return true;
+    }
+
+    private char testForNumber(Block testBlock) {
+        var variation = getCustomVariation(testBlock);
+        if(variation >= 31 && variation <= 45)
+        {
+            variation -= 31;
+            return "0123456789+-*/".toCharArray()[variation];
+        }
+
+        return '\0';
     }
 
     /**
@@ -216,6 +243,13 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
         if (WordDict.singleton.Words.contains(outString.toString().toLowerCase(Locale.ROOT))) {
             e.setCancelled(true);
             e.getPlayer().sendMessage("Hit: " + score);
+            Bukkit.getServer().getPluginManager().callEvent(
+                    new LetterBlocksEvent(
+                            e.getPlayer(),
+                            e.getPlayer().getLocation(),
+                            outString.toString().toLowerCase(Locale.ROOT),
+                            true,
+                            score));
 
             for (var locationOfBlock : blockArray) {
                 e.getBlock().getWorld().getBlockAt(locationOfBlock).setType(Material.AIR);
@@ -223,6 +257,12 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
             applyScore(e.getPlayer(), score);
         } else {
             e.getPlayer().sendMessage("Miss");
+            Bukkit.getServer().getPluginManager().callEvent(
+                    new LetterBlocksEvent(
+                            e.getPlayer(),
+                            e.getPlayer().getLocation(),
+                            outString.toString().toLowerCase(Locale.ROOT)));
+
         }
     }
 
