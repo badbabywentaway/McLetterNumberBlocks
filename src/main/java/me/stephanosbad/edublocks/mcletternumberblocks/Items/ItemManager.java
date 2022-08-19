@@ -6,6 +6,7 @@ import io.th0rgal.oraxen.compatibilities.CompatibilityProvider;
 import io.th0rgal.oraxen.items.OraxenItems;
 import io.th0rgal.oraxen.mechanics.provided.gameplay.noteblock.NoteBlockMechanic;
 import io.th0rgal.oraxen.mechanics.provided.gameplay.noteblock.NoteBlockMechanicFactory;
+import io.th0rgal.oraxen.mechanics.provided.gameplay.noteblock.NoteBlockMechanicListener;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import me.stephanosbad.edublocks.mcletternumberblocks.Rewards.DropReward;
 import me.stephanosbad.edublocks.mcletternumberblocks.Rewards.Reward;
@@ -319,11 +320,12 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
      * @return - Oraxen's noteblock variation code
      */
     int getCustomVariation(Block block) {
-        NoteBlock noteBlock = (NoteBlock) block.getState().getBlockData();
+        /*NoteBlock noteBlock = (NoteBlock) block.getState().getBlockData();
         NoteBlockMechanic mech = NoteBlockMechanicFactory.getBlockMechanic((int) (noteBlock
                 .getInstrument().getType()) * 25 + (int) noteBlock.getNote().getId()
                 + (noteBlock.isPowered() ? 400 : 0) - 26);
-        return mech.getCustomVariation();
+        return mech.getCustomVariation();*/
+        return NoteBlockMechanicListener.getNoteBlockMechanic(block).getCustomVariation();
     }
 
     /**
