@@ -4,8 +4,6 @@ import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import io.th0rgal.oraxen.compatibilities.CompatibilityProvider;
 import io.th0rgal.oraxen.items.OraxenItems;
-import io.th0rgal.oraxen.mechanics.provided.gameplay.noteblock.NoteBlockMechanic;
-import io.th0rgal.oraxen.mechanics.provided.gameplay.noteblock.NoteBlockMechanicFactory;
 import io.th0rgal.oraxen.mechanics.provided.gameplay.noteblock.NoteBlockMechanicListener;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import me.stephanosbad.edublocks.mcletternumberblocks.Rewards.DropReward;
@@ -15,6 +13,8 @@ import me.stephanosbad.edublocks.mcletternumberblocks.Rewards.VaultCurrencyRewar
 import me.stephanosbad.edublocks.mcletternumberblocks.Utility.*;
 import me.stephanosbad.edublocks.mcletternumberblocks.McLetterNumberBlocks;
 import me.stephanosbad.edublocks.mcletternumberblocks.Utility.WordDict;
+import me.stephanosbad.edublocks.mcletternumberblocks.api.WordCompleteEvent;
+import me.stephanosbad.edublocks.mcletternumberblocks.api.NumberHitEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -244,7 +244,7 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
             e.setCancelled(true);
             e.getPlayer().sendMessage("Hit: " + score);
             Bukkit.getServer().getPluginManager().callEvent(
-                    new LetterBlocksEvent(
+                    new WordCompleteEvent(
                             e.getPlayer(),
                             e.getPlayer().getLocation(),
                             outString.toString().toLowerCase(Locale.ROOT),
@@ -258,7 +258,7 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
         } else {
             e.getPlayer().sendMessage("Miss");
             Bukkit.getServer().getPluginManager().callEvent(
-                    new LetterBlocksEvent(
+                    new WordCompleteEvent(
                             e.getPlayer(),
                             e.getPlayer().getLocation(),
                             outString.toString().toLowerCase(Locale.ROOT)));

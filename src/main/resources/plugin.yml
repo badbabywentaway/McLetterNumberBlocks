@@ -5,7 +5,7 @@ api-version: 1.18
 authors: [ stephanosbad ]
 description: Letter and number blocks for use by education plugins
 depend: [ Oraxen ]
-softdepend: [ WorldGuard, GriefPrevention ]
+softdepend: [ WorldGuard, GriefPrevention, Quests ]
 commands:
   charblock:
     usage: /charblock <player> <string>

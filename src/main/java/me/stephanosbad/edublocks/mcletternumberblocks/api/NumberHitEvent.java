@@ -1,4 +1,4 @@
-package me.stephanosbad.edublocks.mcletternumberblocks.Items;
+package me.stephanosbad.edublocks.mcletternumberblocks.api;
 
 import lombok.Getter;
 import org.bukkit.entity.Player;

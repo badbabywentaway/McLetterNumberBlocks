@@ -1,4 +1,4 @@
-package me.stephanosbad.edublocks.mcletternumberblocks.Items;
+package me.stephanosbad.edublocks.mcletternumberblocks.api;
 
 import lombok.Getter;
 import org.bukkit.Location;
@@ -8,7 +8,7 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
-public class LetterBlocksEvent extends Event {
+public class WordCompleteEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
     public final String blockWord;
@@ -17,7 +17,7 @@ public class LetterBlocksEvent extends Event {
     public final Double score;
     public final Boolean isHit;
 
-    public LetterBlocksEvent(Player player, Location location, String blockWord, Boolean isHit, Double score)
+    public WordCompleteEvent(Player player, Location location, String blockWord, Boolean isHit, Double score)
     {
         this.player = player;
         this.location = location;
@@ -26,11 +26,11 @@ public class LetterBlocksEvent extends Event {
         this.score = score;
     }
 
-    public LetterBlocksEvent(Player player, Location location, String blockWord, Boolean isHit) {
+    public WordCompleteEvent(Player player, Location location, String blockWord, Boolean isHit) {
         this(player, location, blockWord, isHit, 0.0);
     }
 
-    public LetterBlocksEvent(Player player, Location location, String blockWord) {
+    public WordCompleteEvent(Player player, Location location, String blockWord) {
         this(player, location, blockWord, false);
     }
 

@@ -7,7 +7,10 @@
     <groupId>me.stephanosbad.edublocks</groupId>
     <artifactId>McLetterNumberBlocks</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <modules>
+        <module>McLetterNumberBlocksQuestModule</module>
+    </modules>
+    <packaging>pom</packaging>
 
     <name>McLetterNumberBlocks</name>
 
