@@ -1,5 +1,13 @@
 # User-specific stuff
-.idea/
+.idea/libraries
+.idea/.gitignore
+.idea/compiler.xml
+.idea/encodings.xml
+.idea/jarRepositories.xml
+.idea/misc.xml
+.idea/uiDesigner.xml
+.idea/vcs.xml
+src/main/.idea/
 
 *.iml
 *.ipr

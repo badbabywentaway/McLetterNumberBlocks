@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="McLetterNumberBlocks:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/McLetterNumberBlocks_jar</output-path>
+    <root id="archive" name="McLetterNumberBlocks.jar">
+      <element id="module-output" name="McLetterNumberBlocks" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/23.0.0/annotations-23.0.0.jar" path-in-jar="/" />
+      <element id="file-copy" path="$PROJECT_DIR$/../kmb/abdlcircle-babblin-plugin/src/main/resources/plugin.yml" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/Words.json" />
+      <element id="dir-copy" path="$PROJECT_DIR$/src/main/resources/Oraxen" />
+    </root>
+  </artifact>
+</component>

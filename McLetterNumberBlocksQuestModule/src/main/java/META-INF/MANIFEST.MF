@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Class-Path: log4j-core-2.17.1.jar log4j-api-2.17.1.jar quests-core-4.4.1
+ .jar HikariCP-4.0.3.jar LocaleLib-35b50bfd53.jar lombok-1.18.24.jar slf
+ 4j-simple-1.7.33.jar spigot-book-api-1.6.jar quests-api-4.4.1.jar mysql
+ -connector-java-8.0.25.jar annotations-23.0.0.jar slf4j-api-1.7.33.jar 
+ oraxen--1af3d860c1-1.jar
+

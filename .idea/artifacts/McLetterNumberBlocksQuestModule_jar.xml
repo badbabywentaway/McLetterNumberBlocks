@@ -1,0 +1,23 @@
+<component name="ArtifactManager">
+  <artifact name="McLetterNumberBlocksQuestModule:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/McLetterNumberBlocksQuestModule_jar</output-path>
+    <root id="root">
+      <element id="archive" name="McLetterNumberBlocksQuestModule.jar">
+        <element id="module-output" name="McLetterNumberBlocksQuestModule" />
+        <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/23.0.0/annotations-23.0.0.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/zaxxer/HikariCP/4.0.3/HikariCP-4.0.3.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/PikaMug/LocaleLib/35b50bfd53/LocaleLib-35b50bfd53.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/logging/log4j/log4j-api/2.17.1/log4j-api-2.17.1.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/logging/log4j/log4j-core/2.17.1/log4j-core-2.17.1.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.24/lombok-1.18.24.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$MAVEN_REPOSITORY$/mysql/mysql-connector-java/8.0.25/mysql-connector-java-8.0.25.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/oraxen/oraxen/-1af3d860c1-1/oraxen--1af3d860c1-1.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$MAVEN_REPOSITORY$/me/blackvein/quests/quests-api/4.4.1/quests-api-4.4.1.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$MAVEN_REPOSITORY$/me/blackvein/quests/quests-core/4.4.1/quests-core-4.4.1.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.33/slf4j-api-1.7.33.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/slf4j/slf4j-simple/1.7.33/slf4j-simple-1.7.33.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$MAVEN_REPOSITORY$/xyz/upperlevel/spigot/book/spigot-book-api/1.6/spigot-book-api-1.6.jar" path-in-jar="/" />
+      </element>
+    </root>
+  </artifact>
+</component>
