@@ -43,6 +43,11 @@ public final class McLetterNumberBlocks extends JavaPlugin {
     public static Plugin oraxenPlugin;
 
     /**
+     * Quests plugin
+     */
+    public static Plugin questsPlugin;
+
+    /**
      * Location of configuration data handler
      */
     public ConfigDataHandler configDataHandler;
@@ -75,6 +80,27 @@ public final class McLetterNumberBlocks extends JavaPlugin {
                 FileUtils.copyResourcesRecursively(Objects.requireNonNull(this.getClass().getResource("/Oraxen")), oraxenFolder);
             } catch (Exception | Error e) {
                 e.printStackTrace();
+            }
+        }
+        if((questsPlugin = getPluginManager().getPlugin("Quests")) != null){
+            var questsFolder = questsPlugin.getDataFolder();
+
+            if(questsFolder.isDirectory())
+            {
+                var questsSubfolder =  new File(questsFolder, "modules");
+                if(questsSubfolder.isDirectory())
+                {
+                    try
+                    {
+                        FileUtils.copyResourcesRecursively(
+                                Objects.requireNonNull(
+                                        this.getClass().getResource("/McLetterNumberBlocksQuestModule.jar")),
+                                questsSubfolder);
+
+                    } catch (Exception | Error e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
 
