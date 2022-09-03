@@ -5,7 +5,6 @@ import me.blackvein.quests.Quest;
 import me.blackvein.quests.Quests;
 import me.stephanosbad.edublocks.mcletternumberblocks.api.WordCompleteEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 
 import java.util.Map;
@@ -35,16 +34,6 @@ public class WordObjective  extends CustomObjective {
                 continue;
             }
 
-            //ItemStack stack = evt.getItemDrop().getItemStack();
-            String userInput = (String) map.get("Item Name");
-            EntityType type = EntityType.fromName(userInput);
-            // Display error if user-specified item name is invalid
-            if (type == null) {
-                Bukkit.getLogger().severe("Drop Item Objective has invalid item name: " + userInput);
-                continue;
-            }
-
-            // Check if the item the player dropped is the one user specified
             if (Objects.equals(
                     evt.blockWord,
                     this.getDataForPlayer(

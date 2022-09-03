@@ -736,3 +736,5 @@ space_block:
         silktouch: false
         loots:
           - { oraxen_item: space_block, probability: 1.0 }
+
+

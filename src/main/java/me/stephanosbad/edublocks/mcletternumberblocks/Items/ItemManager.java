@@ -180,10 +180,10 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
 
     private char testForNumber(Block testBlock) {
         var variation = getCustomVariation(testBlock);
-        if(variation >= 31 && variation <= 45)
+        if(variation >= 31 && variation <= 46)
         {
             variation -= 31;
-            return "0123456789+-*/".toCharArray()[variation];
+            return "0123456789+-* ".toCharArray()[variation];
         }
 
         return '\0';
@@ -360,11 +360,7 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
      * @return - Oraxen's noteblock variation code
      */
     int getCustomVariation(Block block) {
-        /*NoteBlock noteBlock = (NoteBlock) block.getState().getBlockData();
-        NoteBlockMechanic mech = NoteBlockMechanicFactory.getBlockMechanic((int) (noteBlock
-                .getInstrument().getType()) * 25 + (int) noteBlock.getNote().getId()
-                + (noteBlock.isPowered() ? 400 : 0) - 26);
-        return mech.getCustomVariation();*/
+
         return NoteBlockMechanicListener.getNoteBlockMechanic(block).getCustomVariation();
     }
 

@@ -96,7 +96,6 @@ public final class McLetterNumberBlocks extends JavaPlugin {
                                 Objects.requireNonNull(
                                         this.getClass().getResource("/McLetterNumberBlocksQuestModule.jar")),
                                 questsSubfolder);
-
                     } catch (Exception | Error e) {
                         e.printStackTrace();
                     }
