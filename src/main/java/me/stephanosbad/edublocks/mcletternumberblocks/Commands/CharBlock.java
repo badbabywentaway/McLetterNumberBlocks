@@ -1,6 +1,8 @@
 package me.stephanosbad.edublocks.mcletternumberblocks.Commands;
 
-import io.th0rgal.oraxen.items.OraxenItems;
+import me.stephanosbad.edublocks.mcletternumberblocks.Items.LetterBlock;
+import me.stephanosbad.edublocks.mcletternumberblocks.Items.NonAlphaNumBlocks;
+import me.stephanosbad.edublocks.mcletternumberblocks.Items.NumericBlock;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -24,29 +27,6 @@ import java.util.Locale;
  */
 public class CharBlock implements CommandExecutor, TabCompleter {
 
-
-    /**
-     * Non alphanumeric character references
-     */
-    enum NonAlphaNumBlocks{
-        PLUS('+', "plus_block"),
-        MINUS('-', "minus_block"),
-        MULTIPLY('*', "multiply_block"),
-        DIVISION('/', "divide_block");
-
-        public final char charVal;
-        public final String oraxenBlockName;
-
-        /**
-         * Constructor
-         * @param c - character
-         * @param blockName - block name in which to map
-         */
-        NonAlphaNumBlocks(char c, String blockName) {
-            this.charVal = c;
-            this.oraxenBlockName = blockName;
-        }
-    }
 
     /**
      * String which to use for registering this command
@@ -76,11 +56,22 @@ public class CharBlock implements CommandExecutor, TabCompleter {
             ItemStack dropStack = null;
             for (var test : NonAlphaNumBlocks.values()) {
                 if (test.charVal == c) {
-                    dropStack = OraxenItems.getItemById(test.oraxenBlockName).build();
+                    dropStack = test.itemStack;
                 }
             }
             if (dropStack == null) {
-                dropStack = OraxenItems.getItemById(c + "_block").build();
+                var isThere = Arrays.stream(LetterBlock.values()).filter(it -> it.character == c).findFirst();
+                if(!isThere.isEmpty())
+                {
+                    dropStack = isThere.get().itemStack;
+
+                }
+                else
+                {
+                    var isThereNum = Arrays.stream(NumericBlock.values()).filter(it -> it.c == c).findFirst();
+                    if(!isThereNum.isEmpty())
+                    dropStack = isThereNum.get().itemStack;
+                }
             }
             if (givePlayer.getLocation().getWorld() != null) {
                 givePlayer.getLocation().getWorld().dropItemNaturally(givePlayer.getLocation(), dropStack);
@@ -106,6 +97,26 @@ public class CharBlock implements CommandExecutor, TabCompleter {
             }
             StringUtil.copyPartialMatches(mainArg, onlinePlayers, completions);
         }
+
+        if(args.length == 2) {
+            List<String> characterMatches = new ArrayList<>();
+            for(var letter: LetterBlock.values())
+            {
+                characterMatches.add(String.valueOf(letter.character));
+            }
+            for(var number: NumericBlock.values())
+            {
+                characterMatches.add(String.valueOf(number.c));
+            }
+            for(var non : NonAlphaNumBlocks.values())
+            {
+                characterMatches.add(non.oraxenBlockName.toLowerCase(Locale.ROOT).split("_")[0]);
+            }
+            completions = characterMatches;
+
+        }
+
+
         return completions;
     }
 }

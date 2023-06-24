@@ -2,18 +2,17 @@ package me.stephanosbad.edublocks.mcletternumberblocks.Items;
 
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import io.th0rgal.oraxen.api.OraxenBlocks;
+import io.th0rgal.oraxen.api.OraxenItems;
 import io.th0rgal.oraxen.compatibilities.CompatibilityProvider;
-import io.th0rgal.oraxen.items.OraxenItems;
-import io.th0rgal.oraxen.mechanics.provided.gameplay.noteblock.NoteBlockMechanic;
-import io.th0rgal.oraxen.mechanics.provided.gameplay.noteblock.NoteBlockMechanicFactory;
-import io.th0rgal.oraxen.mechanics.provided.gameplay.noteblock.NoteBlockMechanicListener;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
+import me.stephanosbad.edublocks.mcletternumberblocks.McLetterNumberBlocks;
 import me.stephanosbad.edublocks.mcletternumberblocks.Rewards.DropReward;
 import me.stephanosbad.edublocks.mcletternumberblocks.Rewards.Reward;
 import me.stephanosbad.edublocks.mcletternumberblocks.Rewards.RewardType;
 import me.stephanosbad.edublocks.mcletternumberblocks.Rewards.VaultCurrencyReward;
-import me.stephanosbad.edublocks.mcletternumberblocks.Utility.*;
-import me.stephanosbad.edublocks.mcletternumberblocks.McLetterNumberBlocks;
+import me.stephanosbad.edublocks.mcletternumberblocks.Utility.LocationPair;
+import me.stephanosbad.edublocks.mcletternumberblocks.Utility.SimpleTuple;
 import me.stephanosbad.edublocks.mcletternumberblocks.Utility.WordDict;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -132,7 +131,7 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
     public static @NotNull Set<String> getCharacterBlockNames() {
         var retValue = new HashSet<String>();
 
-        for (var letter : LetterFactors.values()) {
+        for (var letter : LetterBlock.values()) {
             retValue.add(letter.id);
         }
         return retValue;
@@ -167,7 +166,7 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
      * @param e - break event.
      */
     private void woodBlockBreak(BlockBreakEvent e) {
-        var block = LetterFactors.randomPickOraxenBlock();
+        var block = LetterBlock.randomPickOraxenBlock();
         var player = e.getPlayer();
         if (protectedSpot(player, e.getBlock().getLocation(), e.getBlock())) {
             return;
@@ -301,7 +300,7 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
         }
         AtomicReference<SimpleTuple<Character, Double>> match = new AtomicReference<>(new SimpleTuple<>('\0', 0D));
         var variation = getCustomVariation(testBlock);
-        if (Arrays.stream(LetterFactors.values()).anyMatch((v) -> {
+        if (Arrays.stream(LetterBlock.values()).anyMatch((v) -> {
             boolean found = variation == v.customVariation;
             if (found) {
                 match.set(new SimpleTuple<>(v.character, v.frequencyFactor));
@@ -325,7 +324,7 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
                 .getInstrument().getType()) * 25 + (int) noteBlock.getNote().getId()
                 + (noteBlock.isPowered() ? 400 : 0) - 26);
         return mech.getCustomVariation();*/
-        return NoteBlockMechanicListener.getNoteBlockMechanic(block).getCustomVariation();
+        return OraxenBlocks.getNoteBlockMechanic(block).getCustomVariation();
     }
 
     /**

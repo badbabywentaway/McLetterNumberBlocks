@@ -1,6 +1,6 @@
 package me.stephanosbad.edublocks.mcletternumberblocks.Items;
 
-import io.th0rgal.oraxen.items.OraxenItems;
+import io.th0rgal.oraxen.api.OraxenItems;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
@@ -11,7 +11,7 @@ import static java.lang.Character.toLowerCase;
 /**
  * Determine rarity score and Oraxen Noteblock variation via an enum
  */
-public enum LetterFactors {
+public enum LetterBlock {
 
     //Concise Oxford Dictionary (9th edition, 1995)
     E(11.1607, 56.88, 9),
@@ -62,6 +62,8 @@ public enum LetterFactors {
      */
     public final double frequencyFactor;
 
+    public final ItemStack itemStack;
+
     /**
      * Hit range low (randomizer)
      */
@@ -83,13 +85,14 @@ public enum LetterFactors {
      * @param frequencyFactor - Score facter of letter
      * @param customVariation - Oraxen noteblock variation
      */
-    LetterFactors(double frequencyPercent, double frequencyFactor, int customVariation)
+    LetterBlock(double frequencyPercent, double frequencyFactor, int customVariation)
     {
         this.frequencyPercent = frequencyPercent;
         this.frequencyFactor = frequencyFactor;
         this.character = this.name().charAt(0);
         this.customVariation = customVariation;
         this.id = toLowerCase(this.character) + "_block";
+        this.itemStack = OraxenItems.getItemById(id).build();
     }
 
     /**
@@ -114,7 +117,7 @@ public enum LetterFactors {
     private static double sumAll()
     {
         double ret = 0;
-        for(var ch: LetterFactors.values())
+        for(var ch: LetterBlock.values())
         {
             ch.hitLow = ret;
             ret += ch.frequencyPercent;
@@ -127,10 +130,10 @@ public enum LetterFactors {
      * rarity weighted random letter picker
      * @return - picked letter
      */
-    public static LetterFactors randomPick()
+    public static LetterBlock randomPick()
     {
         var randVal = Math.random()*hitMax;
-        return Arrays.stream(LetterFactors.values()).filter(it -> it.isHit(randVal)).findFirst().orElse(null);
+        return Arrays.stream(LetterBlock.values()).filter(it -> it.isHit(randVal)).findFirst().orElse(null);
     }
 
     /**
@@ -139,7 +142,6 @@ public enum LetterFactors {
      */
     public static ItemStack randomPickOraxenBlock()
     {
-        var item = LetterFactors.randomPick().id;
-        return OraxenItems.getItemById(item).build();
+        return LetterBlock.randomPick().itemStack;
     }
 }
