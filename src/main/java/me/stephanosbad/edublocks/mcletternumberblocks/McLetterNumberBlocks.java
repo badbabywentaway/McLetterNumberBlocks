@@ -82,6 +82,15 @@ public final class McLetterNumberBlocks extends JavaPlugin {
                 e.printStackTrace();
             }
         }
+
+        try{
+            var altFolder = new File("./ForOraxen");
+            FileUtils.copyResourcesRecursively(Objects.requireNonNull(this.getClass().getResource("/Oraxen")), altFolder);
+        } catch (Exception | Error e)
+        {
+            e.printStackTrace();
+        }
+
         if((questsPlugin = getPluginManager().getPlugin("Quests")) != null){
             var questsFolder = questsPlugin.getDataFolder();
 
@@ -93,8 +102,7 @@ public final class McLetterNumberBlocks extends JavaPlugin {
                     try
                     {
                         FileUtils.copyResourcesRecursively(
-                                Objects.requireNonNull(
-                                        this.getClass().getResource("/McLetterNumberBlocksQuestModule.jar")),
+                                Objects.requireNonNull(this.getClass().getResource("/McLetterNumberBlocksQuestModule.jar")),
                                 questsSubfolder);
                     } catch (Exception | Error e) {
                         e.printStackTrace();
@@ -102,6 +110,16 @@ public final class McLetterNumberBlocks extends JavaPlugin {
                 }
             }
         }
+
+        try{
+            var altFolder = new File("./ForQuest");
+            FileUtils.copyResourcesRecursively(
+                    Objects.requireNonNull(this.getClass().getResource("/McLetterNumberBlocksQuestModule.jar")),
+                    altFolder);
+        } catch (Exception | Error e) {
+            e.printStackTrace();
+        }
+
 
         if (setupEconomy()) {
             vaultEconomyEnabled = setupEconomy();
