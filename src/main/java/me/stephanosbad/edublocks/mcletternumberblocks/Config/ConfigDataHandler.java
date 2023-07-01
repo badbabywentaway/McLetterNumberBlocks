@@ -77,6 +77,8 @@ public class ConfigDataHandler {
             file.getParentFile().mkdirs();
         }
         file.createNewFile();
+        configuration = new YamlConfiguration();
+
         writeToYaml();
     }
 
@@ -103,10 +105,10 @@ public class ConfigDataHandler {
         dropReward.put( "minimumThreshold", 100.0);
         dropReward.put( "maximumRewardCap", 20.0);
         var dropReward1 = new HashMap<String, Object>();
-        dropReward1.put("materialName", Material.GOLD_INGOT.toString());
+        dropReward1.put("materialName", Material.GOLD_NUGGET.toString());
         dropReward1.put("minimumRewardCount", 0.0);
         dropReward1.put( "multiplier", 0.01);
-        dropReward1.put( "minimumThreshold", 500.0);
+        dropReward1.put( "minimumThreshold", 200.0);
         dropReward1.put( "maximumRewardCap", 50.0);
         List<Map<String, Object>> dropsConfiguration = List.of(dropReward,dropReward1);
         configuration.set("Drop", dropsConfiguration);

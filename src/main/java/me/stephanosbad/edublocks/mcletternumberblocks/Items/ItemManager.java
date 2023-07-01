@@ -38,13 +38,32 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
     /**
      * Wood material list.
      */
-    private final List<Material> list = Arrays.asList(
-            Material.ACACIA_LOG,
-            Material.SPRUCE_LOG,
-            Material.OAK_LOG,
-            Material.DARK_OAK_LOG,
-            Material.JUNGLE_LOG,
-            Material.BIRCH_LOG);
+    private final HashMap<Material, Material> list = new HashMap() {
+        {
+            put(Material.ACACIA_LOG, Material.STRIPPED_ACACIA_LOG);
+            put(Material.SPRUCE_LOG, Material.STRIPPED_SPRUCE_LOG);
+            put(Material.OAK_LOG, Material.STRIPPED_OAK_LOG);
+            put(Material.DARK_OAK_LOG, Material.STRIPPED_DARK_OAK_LOG);
+            put(Material.JUNGLE_LOG, Material.STRIPPED_JUNGLE_LOG);
+            put(Material.BIRCH_LOG, Material.STRIPPED_BIRCH_LOG);
+            put(Material.MANGROVE_LOG, Material.STRIPPED_MANGROVE_LOG);
+            put(Material.CHERRY_LOG, Material.STRIPPED_CHERRY_LOG);
+            put(Material.WARPED_STEM, Material.STRIPPED_WARPED_STEM);
+            put(Material.CRIMSON_STEM, Material.STRIPPED_CRIMSON_STEM);
+            put(Material.BAMBOO_BLOCK, Material.STRIPPED_BAMBOO_BLOCK);
+        }
+    };
+
+
+    private final HashMap<Material, Material> listForNumberDrops = new HashMap() {
+        {
+            put(Material.WARPED_STEM, Material.STRIPPED_WARPED_STEM);
+            put(Material.CRIMSON_STEM, Material.STRIPPED_CRIMSON_STEM);
+        }
+    };
+
+    private List<ItemStack> characterBlocksAvailableInNether = null;
+
     /**
      * Exclusion zone for use of this plugin.
      */
@@ -150,10 +169,40 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
 
         if (!(player.getInventory().getItemInMainHand().containsEnchantment(Enchantment.SILK_TOUCH))) {
             //If there is no silk touch on it
-            if (list.contains(e.getBlock().getBlockData().getMaterial()) && Math.random() < 0.05) {
 
-                //check wood
-                woodBlockBreak(e);
+            Material material = e.getBlock().getBlockData().getMaterial();
+            if (list.containsKey(material)) {
+                var hand = e.getPlayer().getInventory().getItemInMainHand();
+
+                //Must be gold item in hand
+                if (!hand.getType().name().toLowerCase(Locale.ROOT).contains("gold") &&
+                !hand.getItemMeta().getDisplayName().toLowerCase(Locale.ROOT).contains("gold")) {
+                    return;
+                }
+
+                var chance = .03;
+                if(hand.containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS))
+                {
+                    switch(hand.getEnchantments().get(Enchantment.LOOT_BONUS_BLOCKS))
+                    {
+                        case 1:
+                            chance = .05;
+                            break;
+                        case 2:
+                            chance = .08;
+                            break;
+                        case 3:
+                            chance = .1;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                if(Math.random() < chance) {
+                    //check wood
+                    woodBlockBreak(e, list.get(material), material);
+                }
             } else {
                 //check letter
                 letterBlockBreak(e);
@@ -164,18 +213,45 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
     /**
      * Check if it was a wood block that was broken.
      * @param e - break event.
+     * @param material - Material to replace block
+     * @param oldMaterial - Old material of block
      */
-    private void woodBlockBreak(BlockBreakEvent e) {
+    private void woodBlockBreak(BlockBreakEvent e, Material material, Material oldMaterial) {
         var block = LetterBlock.randomPickOraxenBlock();
         var player = e.getPlayer();
         if (protectedSpot(player, e.getBlock().getLocation(), e.getBlock())) {
+            player.sendMessage("Protected.");
             return;
         }
         if (block != null) {
-
+            e.setCancelled(true);
+            e.getBlock().setType(Material.AIR);
+            if(listForNumberDrops.containsKey(oldMaterial))
+            {
+                player.getWorld().dropItemNaturally(e.getBlock().getLocation(), randomNumAndCharacter());
+            }
             player.getWorld().dropItemNaturally(e.getBlock().getLocation(), block);
+            player.getWorld().dropItemNaturally(e.getBlock().getLocation(), new ItemStack(material, 1));
 
         }
+    }
+
+    private ItemStack randomNumAndCharacter() {
+        if(characterBlocksAvailableInNether == null)
+        {
+            characterBlocksAvailableInNether = new ArrayList<>();
+            for(var x : NumericBlock.values())
+            {
+                characterBlocksAvailableInNether.add(x.itemStack);
+            }
+            for(var x : NonAlphaNumBlocks.values())
+            {
+                characterBlocksAvailableInNether.add(x.itemStack);
+            }
+        }
+
+        return characterBlocksAvailableInNether.get((int)(Math.random()*characterBlocksAvailableInNether.size()));
+
     }
 
     /**
@@ -186,10 +262,11 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
         var hand = e.getPlayer().getInventory().getItemInMainHand();
 
         if (protectedSpot(e.getPlayer(), e.getBlock().getLocation(), e.getBlock())) {
-            Bukkit.getLogger().info("Protected block: " + e.getBlock().getLocation());
+            e.getPlayer().sendMessage("Protected block: " + e.getBlock().getLocation());
             return;
         }
-        if (!hand.getType().name().toLowerCase(Locale.ROOT).contains("gold")) {
+        if (!hand.getType().name().toLowerCase(Locale.ROOT).contains("gold") &&
+                !hand.getItemMeta().getDisplayName().toLowerCase(Locale.ROOT).contains("gold")) {
             return;
         }
 

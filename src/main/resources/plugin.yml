@@ -1,7 +1,7 @@
 name: McLetterNumberBlocks
 version: '${project.version}'
 main: me.stephanosbad.edublocks.mcletternumberblocks.McLetterNumberBlocks
-api-version: 1.18
+api-version: 1.19
 authors: [ stephanosbad ]
 description: Letter and number blocks for use by education plugins
 depend: [ Oraxen ]
