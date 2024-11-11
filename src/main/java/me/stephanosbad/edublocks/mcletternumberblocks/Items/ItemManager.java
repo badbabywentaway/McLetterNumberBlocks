@@ -176,14 +176,14 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
 
                 //Must be gold item in hand
                 if (!hand.getType().name().toLowerCase(Locale.ROOT).contains("gold") &&
-                !hand.getItemMeta().getDisplayName().toLowerCase(Locale.ROOT).contains("gold")) {
+                !hand.getItemMeta().getItemName().toLowerCase(Locale.ROOT).contains("gold")) {
                     return;
                 }
 
                 var chance = .03;
-                if(hand.containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS))
+                if(hand.containsEnchantment(Enchantment.LOOTING))
                 {
-                    switch(hand.getEnchantments().get(Enchantment.LOOT_BONUS_BLOCKS))
+                    switch(hand.getEnchantments().get(Enchantment.LOOTING))
                     {
                         case 1:
                             chance = .05;
@@ -266,7 +266,7 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
             return;
         }
         if (!hand.getType().name().toLowerCase(Locale.ROOT).contains("gold") &&
-                !hand.getItemMeta().getDisplayName().toLowerCase(Locale.ROOT).contains("gold")) {
+                !hand.getItemMeta().getItemName().toLowerCase(Locale.ROOT).contains("gold")) {
             return;
         }
 
