@@ -174,7 +174,12 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
             if (list.containsKey(material)) {
                 var hand = e.getPlayer().getInventory().getItemInMainHand();
 
+
                 //Must be gold item in hand
+                if (hand.getItemMeta() == null)
+                {
+                    return;
+                }
                 if (!hand.getType().name().toLowerCase(Locale.ROOT).contains("gold") &&
                 !hand.getItemMeta().getItemName().toLowerCase(Locale.ROOT).contains("gold")) {
                     return;
@@ -263,6 +268,10 @@ public class ItemManager extends CompatibilityProvider<McLetterNumberBlocks> imp
 
         if (protectedSpot(e.getPlayer(), e.getBlock().getLocation(), e.getBlock())) {
             e.getPlayer().sendMessage("Protected block: " + e.getBlock().getLocation());
+            return;
+        }
+        if(hand.getItemMeta() == null)
+        {
             return;
         }
         if (!hand.getType().name().toLowerCase(Locale.ROOT).contains("gold") &&
